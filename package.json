@@ -1,13 +1,16 @@
 {
-  "name": "her75",
+  "name": "jojot",
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "Her 75 — a 75-day wellness challenge app for women. React + Vite + Capacitor.",
+  "description": "JojoT — complete a 75 day challenge with your friends and see their to-do lists in real time. React + Vite + Capacitor.",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
+    "check:mono": "node scripts/check-mono.mjs",
+    "e2e": "node scripts/e2e.mjs",
+    "shots": "node scripts/shots.mjs",
     "cap:sync": "cap sync",
     "cap:add:android": "cap add android",
     "cap:add:ios": "cap add ios"
@@ -20,7 +23,6 @@
     "framer-motion": "^11.5.4",
     "lucide-react": "^0.445.0",
     "react": "^18.3.1",
-    "react-bootstrap-icons": "^1.11.6",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {

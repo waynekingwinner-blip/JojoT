@@ -6,7 +6,7 @@
 
 type SoundName = 'tap' | 'click' | 'toggle' | 'success' | 'pop' | 'water' | 'whoosh' | 'chime' | 'error'
 
-const STORAGE_KEY = 'her75:sound'
+const STORAGE_KEY = 'jojot:sound'
 
 let ctx: AudioContext | null = null
 let master: GainNode | null = null

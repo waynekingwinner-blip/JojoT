@@ -1,5 +1,7 @@
 /* ============================================================
-   App.tsx — shell, routing between screens, page transitions.
+   App.tsx — shell, flow routing, page transitions.
+
+   Flow: onboarding → paywall (hard gate) → pick a challenge → app
    ============================================================ */
 
 import { useEffect, useState } from 'react'
@@ -8,6 +10,7 @@ import { useApp, type Tab } from './lib/store'
 import { StatusBar } from './components/ui'
 import TabBar from './components/TabBar'
 import Onboarding from './screens/Onboarding'
+import Paywall from './screens/Paywall'
 import ChallengeSelect from './screens/ChallengeSelect'
 import Today from './screens/Today'
 import Hydrate from './screens/Hydrate'
@@ -16,7 +19,7 @@ import Profile from './screens/Profile'
 import { primeAudio } from './lib/sound'
 
 export default function App() {
-  const { state, challenge } = useApp()
+  const { state, challenge, isPremium } = useApp()
   const [tab, setTab] = useState<Tab>('today')
 
   // unlock audio on first interaction (iOS requirement)
@@ -26,12 +29,13 @@ export default function App() {
     return () => window.removeEventListener('pointerdown', unlock)
   }, [])
 
-  // decide which top-level flow we're in
-  const flow: 'onboarding' | 'choose' | 'app' = !state.onboarded
+  const flow: 'onboarding' | 'paywall' | 'choose' | 'app' = !state.onboarded
     ? 'onboarding'
-    : !challenge
-      ? 'choose'
-      : 'app'
+    : !isPremium
+      ? 'paywall'
+      : !challenge
+        ? 'choose'
+        : 'app'
 
   return (
     <div className="app-root">
@@ -40,19 +44,20 @@ export default function App() {
 
         {/* A single keyed motion.div (no AnimatePresence) makes flow changes
             bulletproof: the new flow always mounts immediately instead of
-            waiting for the previous screen's exit animation — which could stall
-            when the exiting screen (e.g. Onboarding) has its own nested
-            AnimatePresence, leaving the app stuck on a blank screen. */}
+            waiting for the previous screen's exit animation. */}
         <motion.div key={flow} {...enter} className="screen">
           {flow === 'onboarding' && <Onboarding />}
+
+          {flow === 'paywall' && <Paywall />}
 
           {flow === 'choose' && <ChallengeSelect />}
 
           {flow === 'app' && (
             <>
-              {/* Same pattern for tabs: keyed motion.div, always mounts. */}
               <motion.div key={tab} {...slide} className="screen">
-                {tab === 'today' && <Today goHydrate={() => setTab('hydrate')} />}
+                {tab === 'today' && (
+                  <Today goHydrate={() => setTab('hydrate')} goFriends={() => setTab('friends')} />
+                )}
                 {tab === 'hydrate' && <Hydrate />}
                 {tab === 'friends' && <Friends />}
                 {tab === 'profile' && <Profile />}
@@ -66,16 +71,14 @@ export default function App() {
   )
 }
 
-// Flow-level enter animation (no exit needed without AnimatePresence).
 const enter = {
-  initial: { opacity: 0, scale: 0.985 },
+  initial: { opacity: 0, scale: 0.99 },
   animate: { opacity: 1, scale: 1 },
-  transition: { duration: 0.3, ease: [0.4, 0, 0.2, 1] as const },
+  transition: { duration: 0.28, ease: [0.4, 0, 0.2, 1] as const },
 }
 
-// Tab-level enter animation.
 const slide = {
-  initial: { opacity: 0, x: 18 },
+  initial: { opacity: 0, x: 14 },
   animate: { opacity: 1, x: 0 },
-  transition: { duration: 0.24, ease: [0.4, 0, 0.2, 1] as const },
+  transition: { duration: 0.22, ease: [0.4, 0, 0.2, 1] as const },
 }

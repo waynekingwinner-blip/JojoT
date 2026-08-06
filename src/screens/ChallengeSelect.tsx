@@ -1,160 +1,117 @@
 /* ============================================================
-   ChallengeSelect.tsx — browse & pick a challenge.
+   ChallengeSelect.tsx — browse challenges, open one, or build
+   your own. Drives ChallengeDetail / CreateChallenge.
    ============================================================ */
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Check, ArrowRight, Sparkles } from 'lucide-react'
-import { CHALLENGES } from '../lib/data'
+import { ChevronRight, Plus } from 'lucide-react'
 import { useApp } from '../lib/store'
-import { SoundButton, Tappable } from '../components/ui'
-import { Icon } from '../lib/icons'
-import { playSound } from '../lib/sound'
-import { haptic } from '../lib/haptics'
-
-const FILTERS = [
-  { id: 'all', label: 'All' },
-  { id: 'soft', label: 'Soft' },
-  { id: 'medium', label: 'Medium' },
-  { id: 'hard', label: 'Hard' },
-] as const
+import { Tappable, MoodStrip } from '../components/ui'
+import ChallengeDetail from './ChallengeDetail'
+import CreateChallenge from './CreateChallenge'
 
 export default function ChallengeSelect() {
-  const { startChallenge } = useApp()
-  const [filter, setFilter] = useState<(typeof FILTERS)[number]['id']>('all')
-  const [picked, setPicked] = useState<string | null>(null)
+  const { allChallenges } = useApp()
+  const [detailId, setDetailId] = useState<string | null>(null)
+  const [creating, setCreating] = useState(false)
 
-  const list = CHALLENGES.filter((c) => filter === 'all' || c.intensity === filter)
+  if (creating) {
+    return (
+      <CreateChallenge
+        onCancel={() => setCreating(false)}
+        onCreated={(id) => {
+          setCreating(false)
+          setDetailId(id)
+        }}
+      />
+    )
+  }
+
+  if (detailId) {
+    return <ChallengeDetail challengeId={detailId} onBack={() => setDetailId(null)} />
+  }
 
   return (
     <div className="screen">
       <div className="scroll no-tab">
-        <div style={{ paddingTop: 6, marginBottom: 18 }}>
-          <span className="eyebrow">Choose your path</span>
-          <h1 className="display" style={{ fontSize: 34, marginTop: 8 }}>
-            Pick a challenge
+        <div className="title-block">
+          <h1>
+            Select
             <br />
-            that fits <em style={{ fontStyle: 'italic', color: 'var(--accent)' }}>your</em> season
+            your challenge
           </h1>
-          <p className="muted" style={{ marginTop: 10, fontSize: 15 }}>
-            Start gentle or go all-in — you can switch any time.
-          </p>
+          <p>soft, medium, hard, better me…</p>
         </div>
 
-        {/* filter segmented control */}
-        <div className="seg" style={{ marginBottom: 18 }}>
-          {FILTERS.map((f) => {
-            const on = filter === f.id
-            return (
-              <button
-                key={f.id}
-                className={on ? 'active' : ''}
-                onClick={() => {
-                  playSound('tap')
-                  void haptic('light')
-                  setFilter(f.id)
-                }}
-              >
-                {on && <motion.span layoutId="seg-ind" className="seg-ind" transition={{ type: 'spring', stiffness: 380, damping: 30 }} />}
-                {f.label}
-              </button>
-            )
-          })}
-        </div>
-
-        {/* challenge cards */}
-        <div className="stack" style={{ paddingBottom: 96 }}>
-          {list.map((c, idx) => {
-            const on = picked === c.id
-            return (
-              <motion.div
-                key={c.id}
-                layout
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.04 }}
-              >
-                <Tappable
-                  sound="pop"
-                  onClick={() => setPicked(c.id)}
-                  className="card"
-                  style={{
-                    padding: 0,
-                    overflow: 'hidden',
-                    outline: on ? '2.5px solid var(--accent)' : '2.5px solid transparent',
-                    boxShadow: on ? 'var(--shadow-lg)' : 'var(--shadow-md)',
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'stretch' }}>
-                    <div
-                      style={{
-                        width: 92,
-                        flexShrink: 0,
-                        background: c.gradient,
-                        display: 'grid',
-                        placeItems: 'center',
-                      }}
-                    >
-                      <Icon name={c.icon} size={38} color="#ffffff" />
+        <div style={{ marginTop: 22 }}>
+          {allChallenges.map((c, i) => (
+            <motion.div
+              key={c.id}
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.05, duration: 0.35 }}
+              style={{ marginBottom: 26 }}
+            >
+              <Tappable sound="tap" onClick={() => setDetailId(c.id)} style={{ cursor: 'pointer' }}>
+                <div className="row between" style={{ marginBottom: 10, alignItems: 'flex-end' }}>
+                  <div>
+                    <div className="eyebrow">
+                      {c.custom ? 'Yours' : i === 0 ? 'Most popular' : c.tagline}
                     </div>
-                    <div style={{ flex: 1, padding: '15px 16px' }}>
-                      <div className="row between" style={{ alignItems: 'flex-start' }}>
-                        <div>
-                          <div style={{ fontWeight: 800, fontSize: 17 }}>{c.name}</div>
-                          <div className="faint" style={{ fontSize: 12.5, marginTop: 2 }}>
-                            {c.days} days · {c.tasks.length} daily promises
-                          </div>
-                        </div>
-                        <motion.div animate={{ scale: on ? 1 : 0, opacity: on ? 1 : 0 }} className="check on" style={{ width: 26, height: 26 }}>
-                          <Check size={15} strokeWidth={3.5} />
-                        </motion.div>
-                      </div>
-                      <p className="muted" style={{ fontSize: 13.5, marginTop: 7, lineHeight: 1.4 }}>
-                        {c.tagline}
-                      </p>
-                      <div className="row gap-3 wrap" style={{ marginTop: 11, alignItems: 'center' }}>
-                        {c.tasks.slice(0, 4).map((t) => (
-                          <Icon key={t.id} name={t.icon} size={17} color="var(--text-faint)" />
-                        ))}
-                        <span className="pill" style={{ padding: '4px 10px', fontSize: 10.5, textTransform: 'capitalize' }}>
-                          {c.intensity}
-                        </span>
-                      </div>
+                    <div
+                      style={{ fontSize: 22, fontWeight: 600, letterSpacing: '-0.02em', marginTop: 2 }}
+                    >
+                      {c.name}
                     </div>
                   </div>
-                </Tappable>
-              </motion.div>
-            )
-          })}
+                  <ChevronRight size={22} className="faint" style={{ marginBottom: 4 }} />
+                </div>
+                <MoodStrip tones={c.tones} />
+              </Tappable>
+            </motion.div>
+          ))}
+
+          {/* create your own */}
+          <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+            <Tappable
+              sound="pop"
+              onClick={() => setCreating(true)}
+              className="card flat"
+              style={{
+                padding: '22px 18px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 14,
+                marginBottom: 20,
+                cursor: 'pointer',
+              }}
+            >
+              <span
+                style={{
+                  width: 46,
+                  height: 46,
+                  borderRadius: '50%',
+                  border: '1.5px dashed var(--ink-ghost)',
+                  display: 'grid',
+                  placeItems: 'center',
+                  flexShrink: 0,
+                }}
+              >
+                <Plus size={20} />
+              </span>
+              <span>
+                <span style={{ display: 'block', fontSize: 16.5, fontWeight: 600 }}>
+                  Create your own
+                </span>
+                <span style={{ display: 'block', fontSize: 13, color: 'var(--ink-faint)', marginTop: 1 }}>
+                  Your rules, your length, your list
+                </span>
+              </span>
+            </Tappable>
+          </motion.div>
         </div>
       </div>
-
-      {/* sticky CTA */}
-      <motion.div
-        initial={false}
-        animate={{ y: picked ? 0 : 130 }}
-        transition={{ type: 'spring', stiffness: 320, damping: 32 }}
-        style={{
-          position: 'absolute',
-          left: 0,
-          right: 0,
-          bottom: 0,
-          padding: '14px 22px calc(22px + var(--safe-bottom))',
-          background: 'linear-gradient(to top, var(--bg) 55%, transparent)',
-          zIndex: 10,
-        }}
-      >
-        <SoundButton
-          className="block xl"
-          sound="success"
-          haptics="success"
-          onClick={() => picked && startChallenge(picked)}
-        >
-          <Sparkles size={19} />
-          Start {picked ? CHALLENGES.find((c) => c.id === picked)?.name : ''}
-          <ArrowRight size={19} />
-        </SoundButton>
-      </motion.div>
     </div>
   )
 }

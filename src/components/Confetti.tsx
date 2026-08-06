@@ -4,7 +4,7 @@
 
 import { motion } from 'framer-motion'
 
-const COLORS = ['#f48fb6', '#e85f97', '#c3a9f2', '#ffc785', '#84d6ae', '#f6c453']
+const COLORS = ['#0a0a0a', '#4a4a4a', '#8a8a8a', '#b8b8b8', '#d8d8d8', '#2e2e2e']
 
 export default function Confetti({ show }: { show: boolean }) {
   if (!show) return null

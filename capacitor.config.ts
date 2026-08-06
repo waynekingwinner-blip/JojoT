@@ -1,14 +1,14 @@
 import type { CapacitorConfig } from '@capacitor/cli'
 
 const config: CapacitorConfig = {
-  appId: 'com.her75.app',
-  appName: 'Her 75',
+  appId: 'com.jojot.app',
+  appName: 'JojoT',
   webDir: 'dist',
-  backgroundColor: '#fbeef2',
+  backgroundColor: '#ffffff',
   plugins: {
     StatusBar: {
       style: 'LIGHT',
-      backgroundColor: '#fbeef2',
+      backgroundColor: '#ffffff',
     },
   },
 }

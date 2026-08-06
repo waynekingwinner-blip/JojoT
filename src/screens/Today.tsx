@@ -1,201 +1,357 @@
 /* ============================================================
-   Today.tsx — the daily home screen: progress ring, day counter,
-   cycle note, and the 5 daily promises checklist.
+   Today.tsx — the daily home: day counter, friends row, and
+   your to-do list for the day (editable, water/steps/photo aware).
    ============================================================ */
 
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Check, Flame, ChevronRight } from 'lucide-react'
+import { Plus, Pencil, X, Camera, Check, ChevronRight } from 'lucide-react'
 import { useApp } from '../lib/store'
-import { CYCLE } from '../lib/data'
-import { ProgressRing, IconButton } from '../components/ui'
-import { Icon } from '../lib/icons'
+import { FRIENDS } from '../lib/data'
+import { CheckCircle, IconButton, MoodTile, Sheet, SoundButton, Tappable, Toast } from '../components/ui'
 import Confetti from '../components/Confetti'
 import { playSound } from '../lib/sound'
 import { haptic } from '../lib/haptics'
 
-export default function Today({ goHydrate }: { goHydrate: () => void }) {
-  const { state, challenge, todayDone, toggleTask } = useApp()
+const PHOTO_TONES = ['#d2d2d2', '#b6b6b6', '#e0e0e0', '#9e9e9e', '#c8c8c8', '#ececec']
+
+export default function Today({ goHydrate, goFriends }: { goHydrate: () => void; goFriends: () => void }) {
+  const {
+    challenge,
+    currentDay,
+    viewDay,
+    setViewDay,
+    log,
+    waterGoalMl,
+    toggleTask,
+    addTask,
+    updateTask,
+    removeTask,
+    savePhoto,
+    addSteps,
+  } = useApp()
+
+  const [editing, setEditing] = useState(false)
+  const [draft, setDraft] = useState('')
+  const [photoOpen, setPhotoOpen] = useState(false)
   const [celebrate, setCelebrate] = useState(false)
+  const [toast, setToast] = useState<string | null>(null)
   const prevAll = useRef(false)
 
-  if (!challenge) return null
-
-  const total = challenge.tasks.length
-  const done = todayDone.length
-  const progress = done / total
-  const cycle = CYCLE[state.cycle]
-  const allDone = done === total
+  const tasks = challenge?.tasks ?? []
+  const done = log.done.filter((id) => tasks.some((t) => t.id === id))
+  const allDone = tasks.length > 0 && done.length === tasks.length
 
   useEffect(() => {
     if (allDone && !prevAll.current) {
       setCelebrate(true)
       playSound('success')
       void haptic('success')
-      const t = setTimeout(() => setCelebrate(false), 1300)
+      const t = setTimeout(() => setCelebrate(false), 1400)
+      prevAll.current = true
       return () => clearTimeout(t)
     }
-    prevAll.current = allDone
+    if (!allDone) prevAll.current = false
   }, [allDone])
 
-  const greeting = (() => {
-    const h = 9 // faux fixed morning for demo
-    if (h < 12) return 'Good morning'
-    if (h < 18) return 'Good afternoon'
-    return 'Good evening'
-  })()
+  if (!challenge) return null
+
+  const say = (m: string) => {
+    setToast(m)
+    setTimeout(() => setToast(null), 2000)
+  }
+
+  // the 7-day window ending on the day being viewed
+  const weekStart = Math.max(1, viewDay - 3)
+  const week = Array.from({ length: 7 }, (_, i) => weekStart + i).filter((d) => d <= challenge.days)
+
+  const submitDraft = () => {
+    const t = draft.trim()
+    if (!t) return
+    addTask(t)
+    setDraft('')
+    playSound('pop')
+    void haptic('light')
+  }
 
   return (
     <div className="screen">
       <Confetti show={celebrate} />
+      <Toast message={toast} />
+
       <div className="scroll">
-        {/* header */}
-        <div className="row between" style={{ marginBottom: 18 }}>
-          <div>
-            <div className="muted" style={{ fontSize: 14, fontWeight: 600 }}>
-              {greeting},
-            </div>
-            <h1 className="display" style={{ fontSize: 28 }}>
-              {state.name} <Icon name={challenge.icon} size={22} className="inline-ic" color="var(--accent)" />
-            </h1>
-          </div>
-          <div className="pill" style={{ background: 'var(--accent-grad)', color: '#fff', border: 'none', boxShadow: 'var(--shadow-glow)' }}>
-            <Flame size={14} /> {state.currentDay} day streak
-          </div>
-        </div>
-
-        {/* hero progress card */}
-        <motion.div
-          className="card"
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          style={{ padding: '26px 22px', display: 'flex', flexDirection: 'column', alignItems: 'center', overflow: 'hidden', position: 'relative' }}
-        >
-          <div className="eyebrow" style={{ marginBottom: 4 }}>
-            {challenge.name}
-          </div>
-          <ProgressRing progress={progress} size={196} stroke={15}>
-            <div>
-              <div className="display" style={{ fontSize: 17, color: 'var(--text-soft)', fontWeight: 500 }}>
-                Day
-              </div>
-              <div className="display" style={{ fontSize: 64, lineHeight: 0.95, margin: '2px 0' }}>
-                {state.currentDay}
-              </div>
-              <div className="muted" style={{ fontSize: 13, fontWeight: 700 }}>
-                of {challenge.days}
-              </div>
-            </div>
-          </ProgressRing>
-          <div style={{ marginTop: 16, textAlign: 'center' }}>
-            <div style={{ fontWeight: 800, fontSize: 16 }}>
-              {done}/{total} promises kept
-            </div>
-            <div className="muted" style={{ fontSize: 13.5, marginTop: 2 }}>
-              {allDone ? (
-                <>
-                  <Icon name="trophy" size={13} className="inline-ic" color="var(--accent)" /> You did it all today — proud of you!
-                </>
-              ) : (
-                `${Math.round(progress * 100)}% · keep going, you've got this`
-              )}
-            </div>
-          </div>
-        </motion.div>
-
-        {/* cycle awareness banner */}
-        <motion.div
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.05 }}
-          className="card"
-          style={{ marginTop: 14, padding: '13px 15px', display: 'flex', alignItems: 'center', gap: 12, background: `linear-gradient(135deg, ${cycle.color}22, rgba(255,255,255,0.6))` }}
-        >
-          <div style={{ width: 42, height: 42, borderRadius: 13, display: 'grid', placeItems: 'center', background: `${cycle.color}30` }}>
-            <Icon name={cycle.icon} size={21} color={cycle.color} />
-          </div>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontWeight: 800, fontSize: 13.5 }}>
-              {cycle.label} phase
-            </div>
-            <div className="muted" style={{ fontSize: 12.5, marginTop: 1, lineHeight: 1.35 }}>
-              {cycle.note}
-            </div>
-          </div>
-        </motion.div>
-
-        {/* daily promises */}
-        <div className="row between" style={{ margin: '24px 4px 12px' }}>
-          <h2 style={{ fontSize: 18, fontWeight: 800 }}>Today&apos;s promises</h2>
-          <span className="faint" style={{ fontSize: 13, fontWeight: 700 }}>
-            {done}/{total}
-          </span>
-        </div>
-
-        <div className="stack" style={{ marginTop: 0 }}>
-          {challenge.tasks.map((task, i) => {
-            const isDone = todayDone.includes(task.id)
-            const isWater = task.id === 'water'
-            return (
-              <motion.div
-                key={task.id}
-                initial={{ opacity: 0, x: -14 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.06 + i * 0.05 }}
+        {/* ---- day header ---- */}
+        <div style={{ textAlign: 'center', paddingTop: 6 }}>
+          <h1 className="display" style={{ fontSize: 34, fontWeight: 700 }}>
+            Day {viewDay}
+          </h1>
+          <div className="segments" style={{ marginTop: 12 }}>
+            {week.map((d) => (
+              <Tappable
+                key={d}
+                as="button"
+                sound="tap"
+                haptics={false}
+                ariaLabel={`View day ${d}`}
+                onClick={() => {
+                  if (d > currentDay) return say('That day hasn’t happened yet')
+                  setViewDay(d)
+                }}
+                style={{ padding: '4px 2px' }}
               >
-                <div
-                  className={`task ${isDone ? 'done' : ''}`}
-                  onClick={() => {
-                    playSound(isDone ? 'tap' : 'pop')
-                    void haptic(isDone ? 'light' : 'medium')
-                    toggleTask(task.id)
-                  }}
-                  role="button"
-                >
-                  <div className="task-emoji">
-                    <Icon name={task.icon} size={22} />
-                  </div>
-                  <div className="task-body">
-                    <div className="task-title">{task.title}</div>
-                    <div className="task-sub">{task.sub}</div>
-                  </div>
-                  {isWater && (
-                    <IconButton
-                      ariaLabel="Open hydration"
-                      onClick={() => goHydrate()}
-                      className=""
-                    >
-                      <ChevronRight size={18} />
-                    </IconButton>
-                  )}
-                  <motion.div className={`check ${isDone ? 'on' : ''}`} whileTap={{ scale: 0.8 }}>
-                    <AnimatePresence>
-                      {isDone && (
-                        <motion.span
-                          initial={{ scale: 0, rotate: -40 }}
-                          animate={{ scale: 1, rotate: 0 }}
-                          exit={{ scale: 0 }}
-                          transition={{ type: 'spring', stiffness: 500, damping: 18 }}
-                          style={{ display: 'grid', placeItems: 'center' }}
-                        >
-                          <Check size={17} strokeWidth={3.5} />
-                        </motion.span>
-                      )}
-                    </AnimatePresence>
-                  </motion.div>
+                <i className={d <= currentDay ? 'on' : ''} style={{ opacity: d === viewDay ? 1 : 0.45 }} />
+              </Tappable>
+            ))}
+          </div>
+          {viewDay !== currentDay && (
+            <button
+              className="link-btn"
+              style={{ marginTop: 10 }}
+              onClick={() => {
+                playSound('tap')
+                setViewDay(currentDay)
+              }}
+            >
+              Back to today
+            </button>
+          )}
+        </div>
+
+        {/* ---- friends row ---- */}
+        <div className="row gap-3" style={{ marginTop: 22, justifyContent: 'center' }}>
+          {FRIENDS.slice(0, 3).map((f) => {
+            const active = f.tasks.some((t) => t.done)
+            return (
+              <Tappable
+                key={f.id}
+                sound="tap"
+                onClick={goFriends}
+                ariaLabel={`${f.name}, day ${f.day}`}
+                className={`ring ${active ? '' : 'off'}`}
+                style={{ cursor: 'pointer' }}
+              >
+                <div className="avatar" style={{ width: 62, height: 62, background: f.tone, fontSize: 22 }}>
+                  {f.initial}
                 </div>
-              </motion.div>
+              </Tappable>
             )
           })}
+          <Tappable
+            sound="pop"
+            onClick={() => say('Invite link copied')}
+            style={{
+              width: 68,
+              height: 68,
+              borderRadius: '50%',
+              border: '1.5px dashed var(--ink-ghost)',
+              display: 'grid',
+              placeItems: 'center',
+              textAlign: 'center',
+              cursor: 'pointer',
+            }}
+          >
+            <span style={{ fontSize: 10.5, lineHeight: 1.15, color: 'var(--ink-soft)', fontWeight: 500 }}>
+              Add
+              <br />
+              Friends
+            </span>
+          </Tappable>
         </div>
 
-        <p className="faint" style={{ textAlign: 'center', fontSize: 12.5, marginTop: 22, lineHeight: 1.5 }}>
-          Five small promises. No streaks-as-shame, no judgment.
+        {/* ---- list header ---- */}
+        <div className="row between" style={{ marginTop: 30, marginBottom: 4 }}>
+          <h2 style={{ fontSize: 24, fontWeight: 600, letterSpacing: '-0.02em' }}>{challenge.short}</h2>
+          <IconButton
+            className="plain"
+            ariaLabel={editing ? 'Done editing' : 'Edit list'}
+            onClick={() => setEditing((v) => !v)}
+          >
+            {editing ? <Check size={19} /> : <Pencil size={17} />}
+          </IconButton>
+        </div>
+
+        {/* ---- tasks ---- */}
+        <div style={{ marginTop: 4 }}>
+          <AnimatePresence initial={false}>
+            {tasks.map((task) => {
+              const isDone = log.done.includes(task.id)
+
+              let sub: string | null = null
+              if (task.kind === 'water') {
+                sub = `${(log.water / 1000).toFixed(1).replace('.', ',')} / ${(waterGoalMl / 1000)
+                  .toFixed(1)
+                  .replace('.', ',')} L`
+              } else if (task.kind === 'steps') {
+                sub = `${log.steps.toLocaleString()} steps today`
+              } else if (task.kind === 'photo' && log.photo) {
+                sub = 'Picture saved'
+              }
+
+              return (
+                <motion.div
+                  key={task.id}
+                  layout
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  style={{ overflow: 'hidden' }}
+                >
+                  <div className={`task ${isDone ? 'done' : ''}`}>
+                    <CheckCircle
+                      on={isDone}
+                      onClick={() => {
+                        playSound(isDone ? 'tap' : 'pop')
+                        void haptic(isDone ? 'light' : 'medium')
+                        toggleTask(task.id)
+                      }}
+                    />
+
+                    {task.kind === 'water' && <MiniTumbler />}
+
+                    <div className="task-body">
+                      {editing ? (
+                        <input
+                          className="field"
+                          value={task.text}
+                          onChange={(e) => updateTask(task.id, e.target.value)}
+                          style={{ padding: '8px 10px', fontSize: 14.5, borderRadius: 10 }}
+                        />
+                      ) : (
+                        <>
+                          <div className="task-title">{task.text}</div>
+                          {sub && <div className="task-sub">{sub}</div>}
+                        </>
+                      )}
+                    </div>
+
+                    {editing ? (
+                      <IconButton
+                        className="plain"
+                        ariaLabel="Remove task"
+                        sound="whoosh"
+                        onClick={() => removeTask(task.id)}
+                      >
+                        <X size={17} className="faint" />
+                      </IconButton>
+                    ) : task.kind === 'water' ? (
+                      <IconButton className="plain" ariaLabel="Open water tracker" onClick={goHydrate}>
+                        <ChevronRight size={18} className="faint" />
+                      </IconButton>
+                    ) : task.kind === 'steps' ? (
+                      <IconButton
+                        className="plain"
+                        ariaLabel="Add 1,000 steps"
+                        sound="pop"
+                        onClick={() => addSteps(1000)}
+                      >
+                        <Plus size={17} className="faint" />
+                      </IconButton>
+                    ) : task.kind === 'photo' ? (
+                      <IconButton
+                        className="plain"
+                        ariaLabel="Take progress picture"
+                        onClick={() => setPhotoOpen(true)}
+                      >
+                        <Camera size={17} className="faint" />
+                      </IconButton>
+                    ) : null}
+                  </div>
+                </motion.div>
+              )
+            })}
+          </AnimatePresence>
+
+          {/* add a task */}
+          {editing && (
+            <div className="row gap-2" style={{ marginTop: 14 }}>
+              <input
+                className="field"
+                placeholder="Add your own task"
+                value={draft}
+                maxLength={70}
+                onChange={(e) => setDraft(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && submitDraft()}
+                style={{ flex: 1 }}
+              />
+              <IconButton ariaLabel="Add task" sound="pop" onClick={submitDraft}>
+                <Plus size={20} />
+              </IconButton>
+            </div>
+          )}
+        </div>
+
+        {/* ---- progress picture ---- */}
+        {log.photo && (
+          <div style={{ marginTop: 24 }}>
+            <div className="eyebrow" style={{ marginBottom: 8 }}>
+              Day {viewDay} picture
+            </div>
+            <div style={{ height: 190, borderRadius: 16, overflow: 'hidden' }}>
+              <MoodTile tone={log.photo} seed={viewDay} />
+            </div>
+          </div>
+        )}
+
+        <p className="faint" style={{ textAlign: 'center', fontSize: 12.5, marginTop: 26, lineHeight: 1.5 }}>
+          {done.length} of {tasks.length} done · day {viewDay} of {challenge.days}
           <br />
-          The challenge adapts to you.{' '}
-          <Icon name="heart-fill" size={12} className="inline-ic" color="var(--accent)" />
+          {allDone ? 'Everything ticked. That’s the girl.' : 'Missing one doesn’t reset you. Just come back tomorrow.'}
         </p>
       </div>
+
+      {/* ---- photo sheet ---- */}
+      <Sheet open={photoOpen} onClose={() => setPhotoOpen(false)}>
+        <h3 className="display" style={{ fontSize: 24, textAlign: 'center' }}>
+          Progress picture
+        </h3>
+        <p className="muted" style={{ fontSize: 13.5, textAlign: 'center', margin: '8px 0 18px' }}>
+          Day {viewDay} of {challenge.days}. Same spot, same light, every day.
+        </p>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
+          {PHOTO_TONES.map((tone, i) => (
+            <Tappable
+              key={tone}
+              sound="click"
+              onClick={() => {
+                savePhoto(tone)
+                if (!log.done.includes('photo')) {
+                  const photoTask = tasks.find((t) => t.kind === 'photo')
+                  if (photoTask && !log.done.includes(photoTask.id)) toggleTask(photoTask.id)
+                }
+                setPhotoOpen(false)
+                say('Progress picture saved')
+              }}
+              style={{ aspectRatio: '0.78', borderRadius: 12, overflow: 'hidden', cursor: 'pointer' }}
+            >
+              <MoodTile tone={tone} seed={i} radius={12} />
+            </Tappable>
+          ))}
+        </div>
+        <p className="faint" style={{ fontSize: 11.5, textAlign: 'center', margin: '14px 0 10px' }}>
+          Pick a shot from your camera roll. On device this opens the camera.
+        </p>
+        <SoundButton className="block ghost" sound="tap" onClick={() => setPhotoOpen(false)}>
+          Cancel
+        </SoundButton>
+      </Sheet>
     </div>
+  )
+}
+
+function MiniTumbler() {
+  return (
+    <svg width="22" height="30" viewBox="0 0 40 56" fill="none" aria-hidden style={{ flexShrink: 0 }}>
+      <rect x="22" y="0" width="3.4" height="12" rx="1.7" fill="var(--water)" />
+      <path
+        d="M30 22 C38 22 40 27 40 34 C40 41 37 45 30 46"
+        stroke="var(--water)"
+        strokeWidth="4.4"
+        strokeLinecap="round"
+        fill="none"
+        opacity="0.6"
+      />
+      <rect x="6" y="9" width="24" height="9" rx="3" fill="var(--water)" opacity="0.35" />
+      <path d="M7 18 H29 L26.6 52 A3 3 0 0 1 23.6 55 H12.4 A3 3 0 0 1 9.4 52 Z" fill="var(--water)" />
+    </svg>
   )
 }
