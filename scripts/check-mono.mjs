@@ -80,16 +80,6 @@ const SCREENS = [
     } },
   { name: 'water', state: RUNNING, tab: 1 },
   { name: 'friends', state: RUNNING, tab: 2 },
-  { name: 'friends/chat-list', state: RUNNING, tab: 2, after: async (p) => {
-      await p.getByText('Chat groups').click()
-      await p.waitForTimeout(600)
-    } },
-  { name: 'friends/chat-room', state: RUNNING, tab: 2, after: async (p) => {
-      await p.getByText('Chat groups').click()
-      await p.waitForTimeout(500)
-      await p.getByText('75 Hard — June intake').click()
-      await p.waitForTimeout(600)
-    } },
   { name: 'profile', state: RUNNING, tab: 3 },
   { name: 'profile/scrolled', state: RUNNING, tab: 3, after: async (p) => {
       await p.locator('.scroll').last().evaluate((el) => el.scrollTo({ top: el.scrollHeight }))

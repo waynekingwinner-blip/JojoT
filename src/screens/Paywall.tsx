@@ -34,7 +34,6 @@ const PERKS = [
   'Build your own challenge and to-do list',
   'Water, steps & daily progress pictures',
   'Share your day as a progress card',
-  'Community chat groups',
 ]
 
 const HERO_TONES = ['#2b2b2b', '#6b6b6b', '#4a4a4a', '#8f8f8f']

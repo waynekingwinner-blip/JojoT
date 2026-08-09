@@ -216,22 +216,12 @@ await check('share card downloads with the day on it', async () => {
   }
 })
 
-console.log('\n— friends & chat —')
+console.log('\n— friends —')
 await check('friends list renders live to-dos', async () => {
   await page.locator('.tab').nth(2).click()
   await wait(800)
   await page.getByText('Maddy').waitFor({ timeout: 3000 })
   await page.getByText('11:45am').first().waitFor({ timeout: 3000 })
-})
-await check('chat group opens and accepts a message', async () => {
-  await page.getByText('Chat groups').click()
-  await wait(600)
-  await page.getByText('75 Hard — June intake').click()
-  await wait(600)
-  await page.getByPlaceholder('Message').fill('day one, here we go')
-  await page.keyboard.press('Enter')
-  await wait(600)
-  await page.getByText('day one, here we go').waitFor({ timeout: 3000 })
 })
 
 console.log('\n— you —')

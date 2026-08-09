@@ -2,11 +2,11 @@
 
 **Complete a 75 day challenge with your friends — and see their to-do lists in real time.**
 
-A functional recreation of the *Her 75* iOS app
-([id6746784659](https://apps.apple.com/us/app/her-75/id6746784659)), rebranded as
-**JojoT**. Screen structure, flow, typography, and the subscription paywall are
-matched to the shipped app; the code is React + Vite wrapped for native with
-Capacitor.
+Pick a 75-day challenge — or write your own — and work one list a day. Water,
+steps and a daily progress picture are tracked alongside it, and your friends'
+lists sit next to yours so nobody quietly drops out.
+
+React + Vite, wrapped for native with Capacitor.
 
 ## Flow
 
@@ -14,8 +14,7 @@ Capacitor.
 Onboarding  →  Paywall (hard gate)  →  Select your challenge  →  Challenge detail  →  App
 ```
 
-The paywall sits immediately after onboarding, exactly as the live app does —
-there is no free tier. Subscribing or restoring a purchase is the only way in.
+There is no free tier: subscribing or restoring a purchase is the only way in.
 
 ## Screens
 
@@ -27,15 +26,14 @@ there is no free tier. Subscribing or restoring a purchase is the only way in.
 | **Challenge detail** | `+N joined` pill, mood board, the numbered sticky-note rule list, join CTA |
 | **Today** | `Day N`, day-scrubber segments, friends row, your editable to-do list with live water / step / photo readouts |
 | **Water** | Tumbler that fills, ±250 ml, quick adds, goal taken from the active challenge, auto-ticks the water task at 100% |
-| **Friends** | Everyone's list live with completion times, plus **community chat groups** with a working thread |
+| **Friends** | Everyone's list with completion times |
 | **You** | Stats, subscription management, inspiration boards, reading list, settings, switch challenge, reset |
 
 Screenshots live in [`shots/`](shots/).
 
 ## Paywall
 
-Product catalogue and terms in [`src/lib/purchases.ts`](src/lib/purchases.ts) mirror
-the App Store listing:
+Product catalogue and terms live in [`src/lib/purchases.ts`](src/lib/purchases.ts):
 
 | Plan | Price | Product id |
 | --- | --- | --- |
@@ -61,7 +59,7 @@ Everything on screen does something and persists to `localStorage`
 - **Water** feeds the Today readout (`1,5 / 3,8 L`) and auto-completes its task at goal.
 - **Steps** and **progress pictures** are logged per day.
 - **Day scrubber** — tap a segment under `Day N` to look back at an earlier day.
-- **Chat** — send a message into a group thread.
+- **Share card** — renders the day to a 1080×1350 image and opens the native share sheet.
 
 ### A note on imagery
 

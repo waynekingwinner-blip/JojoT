@@ -295,25 +295,9 @@ export const BOOKS: { title: string; author: string }[] = [
   { title: 'Untamed', author: 'Glennon Doyle' },
 ]
 
-/* ------------------------------------------------------------------ */
-/* Community chat                                                      */
-/* ------------------------------------------------------------------ */
-
-export type ChatGroup = { id: string; name: string; members: number; last: string; when: string }
-
-export const CHAT_GROUPS: ChatGroup[] = [
-  { id: 'g1', name: '75 Hard — June intake', members: 1284, last: 'Anna: day 61 and my skin has never…', when: '2m' },
-  { id: 'g2', name: 'Morning workout club', members: 642, last: 'Maddy: 5am crew, who’s up', when: '18m' },
-  { id: 'g3', name: 'Sugar free support', members: 389, last: 'Blake: the label reading is unreal', when: '1h' },
-  { id: 'g4', name: 'Book of the month', members: 917, last: 'Sofia: finished chapter 4, obsessed', when: '3h' },
-]
-
-export type ChatMessage = { id: string; who: string; text: string; when: string; me?: boolean }
-
-export const CHAT_THREAD: ChatMessage[] = [
-  { id: 'm1', who: 'Anna', text: 'day 61 and my skin has never looked like this', when: '11:02' },
-  { id: 'm2', who: 'Maddy', text: 'ok but the outdoor workout in the rain today, brutal', when: '11:04' },
-  { id: 'm3', who: 'Blake', text: 'genuinely the water is the hardest part', when: '11:09' },
-  { id: 'm4', who: 'you', text: 'gallon by 3pm or it never happens', when: '11:11', me: true },
-  { id: 'm5', who: 'Anna', text: 'writing that down', when: '11:12' },
-]
+/* Community chat groups were removed before launch. Open group chat is
+   user-generated content, which pulls in Guideline 1.2 — pre-publication
+   filtering, in-app reporting, user blocking, published contact details
+   and a duty to act on reports. That is a running obligation, not a
+   feature, and it is not worth taking on for an empty room. Revisit once
+   there are real users asking for it. */

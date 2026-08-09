@@ -1,8 +1,8 @@
 /* ============================================================
    purchases.ts — subscription catalogue + a mock store client.
 
-   Prices, product ids and renewal terms mirror the live App Store
-   listing (Premium Weekly $7.99 / Monthly $14.99 / Yearly $49.99).
+   Premium Weekly $7.99 / Monthly $14.99 / Yearly $49.99 — these
+   product ids must stay in lockstep with App Store Connect.
 
    `buy()` / `restore()` are the two seams a real StoreKit or
    Google Play Billing plugin plugs into — swap the bodies for

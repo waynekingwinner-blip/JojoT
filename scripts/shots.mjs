@@ -95,11 +95,6 @@ await tabs.nth(2).click()
 await page.waitForTimeout(1400)
 await page.screenshot({ path: 'shots/06-friends.png' })
 
-// 6b) Chat groups
-await page.getByText('Chat groups', { exact: true }).click().catch(() => {})
-await page.waitForTimeout(900)
-await page.screenshot({ path: 'shots/06b-chat.png' })
-
 // 7) You
 await tabs.nth(3).click()
 await page.waitForTimeout(1400)
