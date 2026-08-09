@@ -27,6 +27,7 @@ import {
 } from '../lib/purchases'
 import { playSound } from '../lib/sound'
 import { haptic } from '../lib/haptics'
+import { linkHandler } from '../lib/openUrl'
 
 const PERKS = [
   'Every challenge — 75 Hard, Medium, Soft & more',
@@ -216,11 +217,11 @@ export default function Paywall() {
           at least 24 hours before the end of the current period. Manage or cancel in your
           account settings.
           <br />
-          <a href={TERMS_URL} target="_blank" rel="noreferrer">
+          <a href={TERMS_URL} onClick={linkHandler(TERMS_URL)} target="_blank" rel="noreferrer">
             Terms of Use
           </a>{' '}
           ·{' '}
-          <a href={PRIVACY_URL} target="_blank" rel="noreferrer">
+          <a href={PRIVACY_URL} onClick={linkHandler(PRIVACY_URL)} target="_blank" rel="noreferrer">
             Privacy Policy
           </a>
         </p>

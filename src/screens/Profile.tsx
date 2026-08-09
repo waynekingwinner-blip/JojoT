@@ -9,6 +9,8 @@ import {
   Bell,
   ChevronRight,
   Eye,
+  LifeBuoy,
+  Lock,
   RefreshCw,
   Repeat,
   Volume2,
@@ -16,7 +18,8 @@ import {
 } from 'lucide-react'
 import { useApp } from '../lib/store'
 import { BOARDS, BOOKS } from '../lib/data'
-import { getPlan } from '../lib/purchases'
+import { getPlan, PRIVACY_URL, SUPPORT_URL } from '../lib/purchases'
+import { openUrl } from '../lib/openUrl'
 import { MoodTile, Sheet, SoundButton, Tappable, Toast, Toggle } from '../components/ui'
 import { isSoundEnabled, setSoundEnabled, playSound } from '../lib/sound'
 import { haptic } from '../lib/haptics'
@@ -236,6 +239,30 @@ export default function Profile() {
             sub="Friends can see your to-do live"
             control={<Toggle on={state.shareWithFriends} onChange={setShare} />}
           />
+          <Tappable
+            sound="tap"
+            onClick={() => void openUrl(SUPPORT_URL)}
+            style={{ cursor: 'pointer' }}
+          >
+            <SettingRow
+              icon={<LifeBuoy size={18} />}
+              title="Help & contact"
+              sub="Cancel, refunds, or just email us"
+              control={<ChevronRight size={17} className="faint" />}
+            />
+          </Tappable>
+          <Tappable
+            sound="tap"
+            onClick={() => void openUrl(PRIVACY_URL)}
+            style={{ cursor: 'pointer' }}
+          >
+            <SettingRow
+              icon={<Lock size={18} />}
+              title="Privacy"
+              sub="Your pictures never leave this device"
+              control={<ChevronRight size={17} className="faint" />}
+            />
+          </Tappable>
         </div>
 
         {/* actions */}

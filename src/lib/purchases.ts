@@ -139,5 +139,14 @@ export async function restore(): Promise<PurchaseResult> {
   return { ok: true, entitlement: found }
 }
 
+/* Apple's standard EULA is fine to link as the Terms of Use, and saves
+   hosting a custom one. The privacy policy must be ours, though —
+   this used to point at apple.com/legal/privacy, which is Apple's own
+   policy and says nothing about this app.
+
+   ⚠️ Both links must open. A paywall that renders these as plain text
+   with no handler is a Guideline 3.1.2 rejection, and the privacy URL
+   must return 200 to a logged-out fetch, not just in your browser. */
 export const TERMS_URL = 'https://www.apple.com/legal/internet-services/itunes/dev/stdeula/'
-export const PRIVACY_URL = 'https://www.apple.com/legal/privacy/'
+export const PRIVACY_URL = 'https://villacojerjp-byte.github.io/JojoT/privacy/'
+export const SUPPORT_URL = 'https://villacojerjp-byte.github.io/JojoT/'
