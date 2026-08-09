@@ -48,9 +48,9 @@
   --r-xl: 34px;
 
   /* --- Type --- */
-  --font-display: 'Playfair Display', 'Times New Roman', serif;
+  --font-display: 'Playfair Display Variable', 'Playfair Display', 'Times New Roman', serif;
   --font-ui: 'Poppins', system-ui, -apple-system, sans-serif;
-  --font-hand: 'Caveat', cursive;
+  --font-hand: 'Caveat Variable', 'Caveat', cursive;
 
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);

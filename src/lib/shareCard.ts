@@ -163,7 +163,7 @@ export async function renderCard(input: CardInput): Promise<string> {
   // ---- day ----
   y += 116
   ctx.fillStyle = INK
-  ctx.font = '700 132px "Playfair Display", Georgia, serif'
+  ctx.font = '700 132px "Playfair Display Variable", "Playfair Display", Georgia, serif'
   ctx.fillText(`Day ${input.day}`, PAD, y)
 
   // ---- challenge ----
