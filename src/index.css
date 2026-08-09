@@ -766,7 +766,9 @@ select {
   z-index: 61;
   background: #fff;
   border-radius: 28px 28px 0 0;
-  padding: 10px 20px calc(24px + var(--safe-bottom));
+  /* clear the floating tab bar — a taller sheet used to hide its own
+     last button underneath it, leaving no way to dismiss */
+  padding: 10px 20px calc(var(--tab-h) + var(--safe-bottom) + 16px);
   max-height: 86%;
   overflow-y: auto;
   scrollbar-width: none;

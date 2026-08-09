@@ -65,7 +65,6 @@ export const CHALLENGES: Challenge[] = [
       { id: 'water', text: 'Drink 1 gallon of water', kind: 'water' },
       { id: 'read', text: 'Read 10 pages of a non-fiction/self-development book', kind: 'check' },
       { id: 'photo', text: 'Take a progress picture every day', kind: 'photo' },
-      { id: 'become', text: 'Become that girl', kind: 'check' },
     ],
   },
   {

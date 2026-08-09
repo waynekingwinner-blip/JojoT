@@ -13,20 +13,20 @@ type Slide = { title: string; em: string; body: string; tones: string[] }
 
 const SLIDES: Slide[] = [
   {
-    title: 'Become',
-    em: 'that girl',
+    title: 'Keep the',
+    em: 'promise',
     body: '75 days. One list a day. The version of you that you keep promising yourself.',
     tones: ['#2b2b2b', '#6b6b6b', '#4a4a4a', '#8f8f8f'],
   },
   {
-    title: 'Do it with',
-    em: 'friends',
-    body: 'See your friends’ to-do lists in real time. Nobody quietly quits when everyone can see.',
+    title: 'Do it',
+    em: 'together',
+    body: 'Your friends’ lists, live next to yours. Nobody quietly quits when everyone can see.',
     tones: ['#9a9a9a', '#c4c4c4', '#7e7e7e', '#dcdcdc'],
   },
   {
-    title: 'Follow your',
-    em: 'routine',
+    title: 'One list,',
+    em: 'every day',
     body: 'Water, steps, workouts, reading, progress pictures — tracked in one place, every day.',
     tones: ['#d4d4d4', '#b0b0b0', '#e6e6e6', '#c2c2c2'],
   },

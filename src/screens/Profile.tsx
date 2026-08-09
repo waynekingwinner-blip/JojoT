@@ -20,6 +20,7 @@ import { getPlan } from '../lib/purchases'
 import { MoodTile, Sheet, SoundButton, Tappable, Toast, Toggle } from '../components/ui'
 import { isSoundEnabled, setSoundEnabled, playSound } from '../lib/sound'
 import { haptic } from '../lib/haptics'
+import { syncReminders } from '../lib/reminders'
 
 export default function Profile() {
   const {
@@ -41,6 +42,18 @@ export default function Profile() {
   const say = (m: string) => {
     setToast(m)
     setTimeout(() => setToast(null), 2200)
+  }
+
+  /** Flip the switch optimistically, then put it back if iOS said no. */
+  const toggleReminders = async (want: boolean) => {
+    setReminders(want)
+    const result = await syncReminders(want)
+    if (result === 'denied') {
+      setReminders(false)
+      say('Turn on notifications for JojoT in iOS Settings first')
+    } else if (result === 'scheduled') {
+      say('You’ll get a nudge every morning at 9')
+    }
   }
 
   const totalDone = Object.values(state.logs).reduce((a, d) => a + d.done.length, 0)
@@ -215,7 +228,7 @@ export default function Profile() {
             icon={<Bell size={18} />}
             title="Reminders"
             sub="Gentle nudges, never naggy"
-            control={<Toggle on={state.remindersOn} onChange={setReminders} />}
+            control={<Toggle on={state.remindersOn} onChange={(v) => void toggleReminders(v)} />}
           />
           <SettingRow
             icon={<Eye size={18} />}

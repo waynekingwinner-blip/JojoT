@@ -17,6 +17,7 @@ import Hydrate from './screens/Hydrate'
 import Friends from './screens/Friends'
 import Profile from './screens/Profile'
 import { primeAudio } from './lib/sound'
+import { resyncQuietly } from './lib/reminders'
 
 export default function App() {
   const { state, challenge, isPremium } = useApp()
@@ -28,6 +29,11 @@ export default function App() {
     window.addEventListener('pointerdown', unlock, { once: true })
     return () => window.removeEventListener('pointerdown', unlock)
   }, [])
+
+  // re-arm the daily reminder across launches, without prompting
+  useEffect(() => {
+    void resyncQuietly(state.remindersOn)
+  }, [state.remindersOn])
 
   const flow: 'onboarding' | 'paywall' | 'choose' | 'app' = !state.onboarded
     ? 'onboarding'

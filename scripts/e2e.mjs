@@ -1,12 +1,18 @@
 /* End-to-end click-through: fresh install → onboarding → paywall → challenge → daily use.
    Run against `npx vite preview --port 4173`. Fails loudly if anything is dead. */
 import { chromium } from 'playwright'
+import { mkdirSync } from 'node:fs'
 
 const BASE = process.env.BASE || 'http://localhost:4173'
 const KEY = 'jojot:state:v1'
+const FAIL_DIR = process.env.FAIL_DIR || 'e2e-failures'
 
 const browser = await chromium.launch()
-const ctx = await browser.newContext({ viewport: { width: 430, height: 880 }, deviceScaleFactor: 2 })
+const ctx = await browser.newContext({
+  viewport: { width: 430, height: 880 },
+  deviceScaleFactor: 2,
+  acceptDownloads: true, // the share card comes back as a download on web
+})
 const page = await ctx.newPage()
 
 const errors = []
@@ -18,12 +24,23 @@ const ok = (label) => {
   steps.push(`  ok  ${label}`)
   console.log(`  ok  ${label}`)
 }
+const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+
 const check = async (label, fn) => {
   try {
     await fn()
     ok(label)
   } catch (e) {
     console.error(`FAIL  ${label}\n      ${e.message.split('\n')[0]}`)
+    // a screenshot of the moment it broke beats guessing at the selector
+    const shot = `${FAIL_DIR}/${slug(label)}.png`
+    try {
+      mkdirSync(FAIL_DIR, { recursive: true })
+      await page.screenshot({ path: shot, fullPage: true })
+      console.error(`      → ${shot}`)
+    } catch {
+      /* screenshot is best-effort */
+    }
     steps.push(`FAIL  ${label}`)
     process.exitCode = 1
   }
@@ -38,7 +55,7 @@ await wait(700)
 
 console.log('\n— onboarding —')
 await check('slide 1 renders', async () => {
-  await page.getByText('Become').first().waitFor({ timeout: 3000 })
+  await page.getByText('Keep the').first().waitFor({ timeout: 3000 })
 })
 await check('Next advances slides', async () => {
   await page.getByRole('button', { name: 'Next' }).click()
@@ -68,7 +85,7 @@ await check('name is persisted', async () => {
 
 console.log('\n— paywall —')
 await check('paywall is the hard gate after onboarding', async () => {
-  await page.getByText('Become').first().waitFor({ timeout: 3000 })
+  await page.getByText('Keep the').first().waitFor({ timeout: 3000 })
   await page.getByText('Restore Purchases').waitFor({ timeout: 3000 })
 })
 await check('all three tiers show App Store prices', async () => {
@@ -113,7 +130,7 @@ await check('challenge detail shows rules + joined count', async () => {
   await page.getByText('75 Day Hard', { exact: true }).first().click()
   await wait(700)
   await page.getByText('+6,256 joined').waitFor({ timeout: 3000 })
-  await page.getByText('Become that girl').waitFor({ timeout: 3000 })
+  await page.getByText('Take a progress picture every day').waitFor({ timeout: 3000 })
 })
 await check('starting the challenge lands on Today at day 1', async () => {
   await page.getByRole('button', { name: /Start 75 Day Hard/ }).click()
@@ -175,14 +192,28 @@ await check('removing a task works', async () => {
   await page.getByRole('button', { name: 'Done editing' }).click()
   await wait(400)
 })
-await check('progress picture saves and ticks its task', async () => {
+// The capture itself goes through the native camera, so it can only be
+// exercised on a device. What is checkable here is that the sheet offers
+// both real routes in and no longer fakes a picture with a colour swatch.
+await check('progress picture sheet offers camera and library', async () => {
   await page.getByRole('button', { name: 'Take progress picture' }).click()
   await wait(700)
-  await page.locator('.sheet [style*="aspect-ratio"]').first().click()
-  await wait(900)
-  const s = await state()
-  if (!s.logs[1].photo) throw new Error('photo not saved')
-  if (!s.logs[1].done.includes('photo')) throw new Error('photo task not ticked')
+  await page.getByRole('button', { name: /Take a picture/ }).waitFor({ timeout: 3000 })
+  await page.getByRole('button', { name: /Choose from library/ }).waitFor({ timeout: 3000 })
+  await page.getByRole('button', { name: 'Cancel' }).click()
+  await wait(500)
+})
+
+await check('share card downloads with the day on it', async () => {
+  const button = page.getByRole('button', { name: /Share your day/ })
+  await button.waitFor({ timeout: 3000 })
+  const [download] = await Promise.all([
+    page.waitForEvent('download', { timeout: 15000 }),
+    button.click(),
+  ])
+  if (!/jojot-day-\d+\.png/.test(download.suggestedFilename())) {
+    throw new Error(`unexpected card filename: ${download.suggestedFilename()}`)
+  }
 })
 
 console.log('\n— friends & chat —')

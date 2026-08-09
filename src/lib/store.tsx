@@ -6,6 +6,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import type { ReactNode } from 'react'
 import { CHALLENGES, type Challenge, type Task, type TaskKind } from './data'
 import { clearReceipt, type Entitlement, type PlanId } from './purchases'
+import { deletePhoto } from './photos'
 
 const KEY = 'jojot:state:v1'
 
@@ -295,6 +296,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setShare: (on) => setState((s) => ({ ...s, shareWithFriends: on })),
     resetAll: () => {
       clearReceipt()
+      // a reset should really take the pictures with it, not just forget them
+      for (const day of Object.values(state.logs)) {
+        if (day.photo) void deletePhoto(day.photo)
+      }
       setViewDayRaw(null)
       setState(DEFAULT)
     },

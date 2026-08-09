@@ -6,7 +6,17 @@ dist-ssr
 .vscode/*
 !.vscode/extensions.json
 android
-ios
+
+# The iOS project IS tracked — Info.plist carries the camera/photo usage
+# strings and the portrait lock, and `cap add ios` would silently recreate
+# them empty on another machine. Only its build output is ignored.
+ios/App/Pods/
+ios/App/App/public/
+ios/App/build/
+ios/App/output/
+ios/App/App.xcodeproj/xcuserdata/
+ios/App/App.xcworkspace/xcuserdata/
+ios/DerivedData/
 
 # TypeScript / Vite build artifacts
 *.tsbuildinfo
@@ -16,3 +26,7 @@ vite.config.d.ts
 # IDE
 .idea
 *.iml
+
+# e2e failure screenshots
+e2e-failures/
+scratch/

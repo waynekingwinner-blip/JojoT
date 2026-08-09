@@ -1,10 +1,13 @@
 /* ============================================================
    Paywall.tsx — the subscription gate.
 
-   Mirrors the live app: a hard paywall shown straight after
-   onboarding, three auto-renewing tiers (Weekly $7.99 /
-   Monthly $14.99 / Yearly $49.99), Restore Purchases, and the
-   App Store auto-renewal disclosure.
+   A hard paywall shown straight after onboarding: three
+   auto-renewing tiers (Weekly $7.99 / Monthly $14.99 /
+   Yearly $49.99), Restore Purchases, and the App Store
+   auto-renewal disclosure.
+
+   Every line in PERKS must be a feature that actually ships —
+   App Review reads this list (Guideline 2.3.1).
    ============================================================ */
 
 import { useState } from 'react'
@@ -30,6 +33,7 @@ const PERKS = [
   'See your friends’ to-do lists in real time',
   'Build your own challenge and to-do list',
   'Water, steps & daily progress pictures',
+  'Share your day as a progress card',
   'Community chat groups',
 ]
 
@@ -86,9 +90,9 @@ export default function Paywall() {
         {/* ---- hero ---- */}
         <div style={{ textAlign: 'center', paddingTop: 8 }}>
           <h1 className="display" style={{ fontSize: 40, lineHeight: 1.02 }}>
-            Become
+            Keep the
             <br />
-            that <em>girl</em>
+            <em>promise</em>
           </h1>
           <p className="muted" style={{ fontSize: 14, marginTop: 10 }}>
             Unlock JojoT and start your 75 days.

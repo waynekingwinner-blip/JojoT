@@ -5,18 +5,20 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Plus, Pencil, X, Camera, Check, ChevronRight } from 'lucide-react'
+import { Plus, Pencil, X, Camera, Check, ChevronRight, Image as ImageIcon, Share2 } from 'lucide-react'
 import { useApp } from '../lib/store'
+import { shareDay } from '../lib/shareCard'
 import { FRIENDS } from '../lib/data'
 import { CheckCircle, IconButton, MoodTile, Sheet, SoundButton, Tappable, Toast } from '../components/ui'
 import Confetti from '../components/Confetti'
 import { playSound } from '../lib/sound'
 import { haptic } from '../lib/haptics'
-
-const PHOTO_TONES = ['#d2d2d2', '#b6b6b6', '#e0e0e0', '#9e9e9e', '#c8c8c8', '#ececec']
+import { capturePhoto, isTone, type PhotoSource } from '../lib/photos'
+import { usePhoto } from '../lib/usePhoto'
 
 export default function Today({ goHydrate, goFriends }: { goHydrate: () => void; goFriends: () => void }) {
   const {
+    state,
     challenge,
     currentDay,
     viewDay,
@@ -34,6 +36,8 @@ export default function Today({ goHydrate, goFriends }: { goHydrate: () => void;
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState('')
   const [photoOpen, setPhotoOpen] = useState(false)
+  const [capturing, setCapturing] = useState(false)
+  const [sharing, setSharing] = useState(false)
   const [celebrate, setCelebrate] = useState(false)
   const [toast, setToast] = useState<string | null>(null)
   const prevAll = useRef(false)
@@ -72,6 +76,42 @@ export default function Today({ goHydrate, goFriends }: { goHydrate: () => void;
     setDraft('')
     playSound('pop')
     void haptic('light')
+  }
+
+  const shareToday = async () => {
+    setSharing(true)
+    try {
+      const result = await shareDay({
+        day: viewDay,
+        totalDays: challenge.days,
+        challengeName: challenge.short,
+        tasks: tasks.map((t) => ({ text: t.text, done: log.done.includes(t.id) })),
+        photoRef: log.photo,
+        name: state.name || undefined,
+      })
+      if (result === 'saved') say('Card saved')
+    } catch {
+      say('Could not build your card')
+    } finally {
+      setSharing(false)
+    }
+  }
+
+  const takePicture = async (source: PhotoSource) => {
+    setCapturing(true)
+    try {
+      const ref = await capturePhoto(source, viewDay)
+      if (!ref) return // cancelled, or permission denied — leave the sheet open
+      savePhoto(ref)
+      const photoTask = tasks.find((t) => t.kind === 'photo')
+      if (photoTask && !log.done.includes(photoTask.id)) toggleTask(photoTask.id)
+      playSound('success')
+      void haptic('success')
+      setPhotoOpen(false)
+      say('Progress picture saved')
+    } finally {
+      setCapturing(false)
+    }
   }
 
   return (
@@ -281,59 +321,100 @@ export default function Today({ goHydrate, goFriends }: { goHydrate: () => void;
         </div>
 
         {/* ---- progress picture ---- */}
-        {log.photo && (
-          <div style={{ marginTop: 24 }}>
-            <div className="eyebrow" style={{ marginBottom: 8 }}>
-              Day {viewDay} picture
-            </div>
-            <div style={{ height: 190, borderRadius: 16, overflow: 'hidden' }}>
-              <MoodTile tone={log.photo} seed={viewDay} />
-            </div>
-          </div>
-        )}
+        {log.photo && <ProgressPicture photoRef={log.photo} day={viewDay} />}
 
-        <p className="faint" style={{ textAlign: 'center', fontSize: 12.5, marginTop: 26, lineHeight: 1.5 }}>
+        <SoundButton
+          className="block ghost"
+          sound="tap"
+          disabled={sharing}
+          onClick={() => void shareToday()}
+          style={{
+            marginTop: 26,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 9,
+          }}
+        >
+          <Share2 size={17} />
+          {sharing ? 'Preparing…' : 'Share your day'}
+        </SoundButton>
+
+        <p className="faint" style={{ textAlign: 'center', fontSize: 12.5, marginTop: 18, lineHeight: 1.5 }}>
           {done.length} of {tasks.length} done · day {viewDay} of {challenge.days}
           <br />
-          {allDone ? 'Everything ticked. That’s the girl.' : 'Missing one doesn’t reset you. Just come back tomorrow.'}
+          {allDone ? 'Everything ticked. Every single one.' : 'Missing one doesn’t reset you. Just come back tomorrow.'}
         </p>
       </div>
 
       {/* ---- photo sheet ---- */}
-      <Sheet open={photoOpen} onClose={() => setPhotoOpen(false)}>
+      <Sheet open={photoOpen} onClose={() => !capturing && setPhotoOpen(false)}>
         <h3 className="display" style={{ fontSize: 24, textAlign: 'center' }}>
           Progress picture
         </h3>
         <p className="muted" style={{ fontSize: 13.5, textAlign: 'center', margin: '8px 0 18px' }}>
           Day {viewDay} of {challenge.days}. Same spot, same light, every day.
         </p>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
-          {PHOTO_TONES.map((tone, i) => (
-            <Tappable
-              key={tone}
-              sound="click"
-              onClick={() => {
-                savePhoto(tone)
-                if (!log.done.includes('photo')) {
-                  const photoTask = tasks.find((t) => t.kind === 'photo')
-                  if (photoTask && !log.done.includes(photoTask.id)) toggleTask(photoTask.id)
-                }
-                setPhotoOpen(false)
-                say('Progress picture saved')
-              }}
-              style={{ aspectRatio: '0.78', borderRadius: 12, overflow: 'hidden', cursor: 'pointer' }}
-            >
-              <MoodTile tone={tone} seed={i} radius={12} />
-            </Tappable>
-          ))}
-        </div>
+
+        <SoundButton
+          className="block"
+          sound="pop"
+          disabled={capturing}
+          onClick={() => void takePicture('camera')}
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}
+        >
+          <Camera size={18} />
+          {capturing ? 'Saving…' : 'Take a picture'}
+        </SoundButton>
+
+        <SoundButton
+          className="block ghost"
+          sound="tap"
+          disabled={capturing}
+          onClick={() => void takePicture('library')}
+          style={{ marginTop: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}
+        >
+          <ImageIcon size={18} />
+          Choose from library
+        </SoundButton>
+
         <p className="faint" style={{ fontSize: 11.5, textAlign: 'center', margin: '14px 0 10px' }}>
-          Pick a shot from your camera roll. On device this opens the camera.
+          Your pictures stay on this device. They are never uploaded.
         </p>
-        <SoundButton className="block ghost" sound="tap" onClick={() => setPhotoOpen(false)}>
+        <SoundButton
+          className="block ghost"
+          sound="tap"
+          disabled={capturing}
+          onClick={() => setPhotoOpen(false)}
+        >
           Cancel
         </SoundButton>
       </Sheet>
+    </div>
+  )
+}
+
+/** The day's picture — a real photo, or the abstract tile for
+    mood-tone refs saved before the camera existed. */
+function ProgressPicture({ photoRef, day }: { photoRef: string; day: number }) {
+  const src = usePhoto(photoRef)
+
+  return (
+    <div style={{ marginTop: 24 }}>
+      <div className="eyebrow" style={{ marginBottom: 8 }}>
+        Day {day} picture
+      </div>
+      <div style={{ height: 190, borderRadius: 16, overflow: 'hidden', background: 'var(--paper)' }}>
+        {isTone(photoRef) ? (
+          <MoodTile tone={photoRef} seed={day} />
+        ) : src ? (
+          <img
+            src={src}
+            alt={`Progress picture, day ${day}`}
+            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+          />
+        ) : null}
+      </div>
     </div>
   )
 }
