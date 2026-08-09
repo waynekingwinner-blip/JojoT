@@ -132,7 +132,7 @@ export function CheckCircle({
   onClick,
 }: {
   on: boolean
-  /** black fill (friends list) vs. the softer grey fill (your list) */
+  /** black fill vs. the softer grey fill */
   ink?: boolean
   size?: 'sm' | 'md'
   onClick?: () => void

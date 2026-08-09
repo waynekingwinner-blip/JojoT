@@ -1,5 +1,5 @@
 /* ============================================================
-   Today.tsx — the daily home: day counter, friends row, and
+   Today.tsx — the daily home: day counter and
    your to-do list for the day (editable, water/steps/photo aware).
    ============================================================ */
 
@@ -8,7 +8,6 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { Plus, Pencil, X, Camera, Check, ChevronRight, Image as ImageIcon, Share2 } from 'lucide-react'
 import { useApp } from '../lib/store'
 import { shareDay } from '../lib/shareCard'
-import { FRIENDS } from '../lib/data'
 import { CheckCircle, IconButton, MoodTile, Sheet, SoundButton, Tappable, Toast } from '../components/ui'
 import Confetti from '../components/Confetti'
 import { playSound } from '../lib/sound'
@@ -16,7 +15,7 @@ import { haptic } from '../lib/haptics'
 import { capturePhoto, isTone, type PhotoSource } from '../lib/photos'
 import { usePhoto } from '../lib/usePhoto'
 
-export default function Today({ goHydrate, goFriends }: { goHydrate: () => void; goFriends: () => void }) {
+export default function Today({ goHydrate }: { goHydrate: () => void }) {
   const {
     state,
     challenge,
@@ -155,47 +154,6 @@ export default function Today({ goHydrate, goFriends }: { goHydrate: () => void;
               Back to today
             </button>
           )}
-        </div>
-
-        {/* ---- friends row ---- */}
-        <div className="row gap-3" style={{ marginTop: 22, justifyContent: 'center' }}>
-          {FRIENDS.slice(0, 3).map((f) => {
-            const active = f.tasks.some((t) => t.done)
-            return (
-              <Tappable
-                key={f.id}
-                sound="tap"
-                onClick={goFriends}
-                ariaLabel={`${f.name}, day ${f.day}`}
-                className={`ring ${active ? '' : 'off'}`}
-                style={{ cursor: 'pointer' }}
-              >
-                <div className="avatar" style={{ width: 62, height: 62, background: f.tone, fontSize: 22 }}>
-                  {f.initial}
-                </div>
-              </Tappable>
-            )
-          })}
-          <Tappable
-            sound="pop"
-            onClick={() => say('Invite link copied')}
-            style={{
-              width: 68,
-              height: 68,
-              borderRadius: '50%',
-              border: '1.5px dashed var(--ink-ghost)',
-              display: 'grid',
-              placeItems: 'center',
-              textAlign: 'center',
-              cursor: 'pointer',
-            }}
-          >
-            <span style={{ fontSize: 10.5, lineHeight: 1.15, color: 'var(--ink-soft)', fontWeight: 500 }}>
-              Add
-              <br />
-              Friends
-            </span>
-          </Tappable>
         </div>
 
         {/* ---- list header ---- */}

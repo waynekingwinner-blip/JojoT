@@ -79,13 +79,12 @@ const SCREENS = [
       await p.waitForTimeout(700)
     } },
   { name: 'water', state: RUNNING, tab: 1 },
-  { name: 'friends', state: RUNNING, tab: 2 },
-  { name: 'profile', state: RUNNING, tab: 3 },
-  { name: 'profile/scrolled', state: RUNNING, tab: 3, after: async (p) => {
+  { name: 'profile', state: RUNNING, tab: 2 },
+  { name: 'profile/scrolled', state: RUNNING, tab: 2, after: async (p) => {
       await p.locator('.scroll').last().evaluate((el) => el.scrollTo({ top: el.scrollHeight }))
       await p.waitForTimeout(600)
     } },
-  { name: 'profile/confirm-sheet', state: RUNNING, tab: 3, after: async (p) => {
+  { name: 'profile/confirm-sheet', state: RUNNING, tab: 2, after: async (p) => {
       await p.locator('.link-btn', { hasText: 'Cancel subscription' }).click()
       await p.waitForTimeout(700)
     } },

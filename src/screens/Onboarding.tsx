@@ -19,15 +19,15 @@ const SLIDES: Slide[] = [
     tones: ['#2b2b2b', '#6b6b6b', '#4a4a4a', '#8f8f8f'],
   },
   {
-    title: 'Do it',
-    em: 'together',
-    body: 'Your friends’ lists, live next to yours. Nobody quietly quits when everyone can see.',
-    tones: ['#9a9a9a', '#c4c4c4', '#7e7e7e', '#dcdcdc'],
-  },
-  {
     title: 'One list,',
     em: 'every day',
     body: 'Water, steps, workouts, reading, progress pictures — tracked in one place, every day.',
+    tones: ['#9a9a9a', '#c4c4c4', '#7e7e7e', '#dcdcdc'],
+  },
+  {
+    title: 'Watch it',
+    em: 'add up',
+    body: 'Every day you finish fills in. Share the card when a run of them starts to look good.',
     tones: ['#d4d4d4', '#b0b0b0', '#e6e6e6', '#c2c2c2'],
   },
 ]
@@ -109,7 +109,7 @@ export default function Onboarding() {
                 <em>call you?</em>
               </h1>
               <p className="muted" style={{ fontSize: 14.5, textAlign: 'center', margin: '12px 0 26px' }}>
-                This is the name your friends will see.
+                This is the name on your progress cards.
               </p>
               <input
                 className="field"

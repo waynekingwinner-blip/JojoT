@@ -31,7 +31,6 @@ import { linkHandler } from '../lib/openUrl'
 
 const PERKS = [
   'Every challenge — 75 Hard, Medium, Soft & more',
-  'See your friends’ to-do lists in real time',
   'Build your own challenge and to-do list',
   'Water, steps & daily progress pictures',
   'Share your day as a progress card',

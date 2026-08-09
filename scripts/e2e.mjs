@@ -60,7 +60,7 @@ await check('slide 1 renders', async () => {
 await check('Next advances slides', async () => {
   await page.getByRole('button', { name: 'Next' }).click()
   await wait(500)
-  await page.getByText('friends', { exact: false }).first().waitFor({ timeout: 3000 })
+  await page.getByText('every day', { exact: false }).first().waitFor({ timeout: 3000 })
 })
 await check('Get started opens the name field', async () => {
   await page.getByRole('button', { name: 'Next' }).click()
@@ -216,17 +216,9 @@ await check('share card downloads with the day on it', async () => {
   }
 })
 
-console.log('\n— friends —')
-await check('friends list renders live to-dos', async () => {
-  await page.locator('.tab').nth(2).click()
-  await wait(800)
-  await page.getByText('Maddy').waitFor({ timeout: 3000 })
-  await page.getByText('11:45am').first().waitFor({ timeout: 3000 })
-})
-
 console.log('\n— you —')
 await check('profile shows the active subscription', async () => {
-  await page.locator('.tab').nth(3).click()
+  await page.locator('.tab').nth(2).click()
   await wait(800)
   await page.getByText('JojoT Premium · Weekly').waitFor({ timeout: 3000 })
   await page.getByText('Active', { exact: true }).waitFor({ timeout: 3000 })

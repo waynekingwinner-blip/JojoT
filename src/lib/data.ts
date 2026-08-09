@@ -1,5 +1,5 @@
 /* ============================================================
-   data.ts — challenge presets, seed friends, inspiration.
+   data.ts — challenge presets and inspiration boards.
 
    Task `kind` drives how a row behaves on the Today screen:
      check  — plain tick
@@ -187,94 +187,10 @@ export const NOTE_COLORS = [
   'var(--note-6)',
 ]
 
-/* ------------------------------------------------------------------ */
-/* Friends                                                             */
-/* ------------------------------------------------------------------ */
-
-export type FriendTask = { text: string; done: boolean; at?: string }
-
-export type Friend = {
-  id: string
-  name: string
-  initial: string
-  tone: string
-  day: number
-  challenge: string
-  tasks: FriendTask[]
-}
-
-export const FRIENDS: Friend[] = [
-  {
-    id: 'f1',
-    name: 'Maddy',
-    initial: 'M',
-    tone: 'linear-gradient(135deg,#8e8e8e,#3f3f3f)',
-    day: 75,
-    challenge: '75 Hard',
-    tasks: [
-      { text: 'Walk 10,000 steps', done: false },
-      { text: 'Read 10 pages', done: false },
-      { text: 'Workout', done: false },
-      { text: 'Follow a strict diet', done: true, at: '11:45am' },
-    ],
-  },
-  {
-    id: 'f2',
-    name: 'Anna',
-    initial: 'A',
-    tone: 'linear-gradient(135deg,#a8a8a8,#585858)',
-    day: 75,
-    challenge: '75 Hard',
-    tasks: [
-      { text: 'Walk 10,000 steps', done: false },
-      { text: 'Read 10 pages', done: false },
-      { text: 'Workout', done: true, at: '10:45am' },
-      { text: 'Follow a strict diet', done: true, at: '11:45am' },
-    ],
-  },
-  {
-    id: 'f3',
-    name: 'Blake',
-    initial: 'B',
-    tone: 'linear-gradient(135deg,#c2c2c2,#767676)',
-    day: 75,
-    challenge: '75 Medium',
-    tasks: [
-      { text: 'Walk 10,000 steps', done: false },
-      { text: 'Read 10 pages', done: false },
-      { text: 'Workout', done: false },
-      { text: 'Follow a strict diet', done: false },
-    ],
-  },
-  {
-    id: 'f4',
-    name: 'Sofia',
-    initial: 'S',
-    tone: 'linear-gradient(135deg,#9a9a9a,#4c4c4c)',
-    day: 42,
-    challenge: '75 Soft',
-    tasks: [
-      { text: 'Drink 3 L of water', done: true, at: '9:10am' },
-      { text: 'Train 45 minutes', done: true, at: '7:30am' },
-      { text: 'Read 10 pages', done: false },
-      { text: 'Eat well', done: true, at: '1:20pm' },
-    ],
-  },
-  {
-    id: 'f5',
-    name: 'Priya',
-    initial: 'P',
-    tone: 'linear-gradient(135deg,#b4b4b4,#666666)',
-    day: 22,
-    challenge: 'Glow Within',
-    tasks: [
-      { text: 'AM + PM skincare', done: true, at: '8:05am' },
-      { text: 'Walk 10,000 steps', done: false },
-      { text: 'Sleep 8 hours', done: true, at: '6:50am' },
-      { text: 'Gratitude', done: false },
-    ],
-  },
-]
+/* Friends were seeded fixtures — five hardcoded people whose lists never
+   moved. The paywall sold "see your friends' lists in real time", which
+   made them a Guideline 2.3.1 problem, not just an unfinished feature.
+   Feature and fixtures both removed until there is a backend behind it. */
 
 /* ------------------------------------------------------------------ */
 /* Inspiration boards                                                  */

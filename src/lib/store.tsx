@@ -10,7 +10,7 @@ import { deletePhoto } from './photos'
 
 const KEY = 'jojot:state:v1'
 
-export type Tab = 'today' | 'hydrate' | 'friends' | 'profile'
+export type Tab = 'today' | 'hydrate' | 'profile'
 
 type DayLog = {
   /** completed task ids */

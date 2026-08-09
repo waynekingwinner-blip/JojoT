@@ -8,7 +8,6 @@ import { motion } from 'framer-motion'
 import {
   Bell,
   ChevronRight,
-  Eye,
   LifeBuoy,
   Lock,
   RefreshCw,
@@ -34,7 +33,6 @@ export default function Profile() {
     resetAll,
     cancelSubscription,
     setReminders,
-    setShare,
   } = useApp()
 
   const [soundOn, setSoundOn] = useState(isSoundEnabled())
@@ -233,12 +231,6 @@ export default function Profile() {
             sub="Gentle nudges, never naggy"
             control={<Toggle on={state.remindersOn} onChange={(v) => void toggleReminders(v)} />}
           />
-          <SettingRow
-            icon={<Eye size={18} />}
-            title="Share my list"
-            sub="Friends can see your to-do live"
-            control={<Toggle on={state.shareWithFriends} onChange={setShare} />}
-          />
           <Tappable
             sound="tap"
             onClick={() => void openUrl(SUPPORT_URL)}
@@ -286,7 +278,7 @@ export default function Profile() {
         </div>
 
         <p className="faint" style={{ textAlign: 'center', fontSize: 11.5, marginTop: 16 }}>
-          JojoT · 75 day challenge with friends
+          JojoT · 75 days, one list at a time
         </p>
       </div>
 

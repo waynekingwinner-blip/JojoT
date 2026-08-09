@@ -3,7 +3,7 @@
    ============================================================ */
 
 import { motion } from 'framer-motion'
-import { CheckSquare, Droplet, Users, User } from 'lucide-react'
+import { CheckSquare, Droplet, User } from 'lucide-react'
 import type { Tab } from '../lib/store'
 import { playSound, primeAudio } from '../lib/sound'
 import { haptic } from '../lib/haptics'
@@ -11,7 +11,6 @@ import { haptic } from '../lib/haptics'
 const TABS: { id: Tab; label: string; icon: typeof User }[] = [
   { id: 'today', label: 'Today', icon: CheckSquare },
   { id: 'hydrate', label: 'Water', icon: Droplet },
-  { id: 'friends', label: 'Friends', icon: Users },
   { id: 'profile', label: 'You', icon: User },
 ]
 
