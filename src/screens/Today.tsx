@@ -303,6 +303,8 @@ export default function Today({ goHydrate }: { goHydrate: () => void }) {
           <br />
           {allDone ? 'Everything ticked. Every single one.' : 'Missing one doesn’t reset you. Just come back tomorrow.'}
         </p>
+
+        <DayGrid day={currentDay} total={challenge.days} />
       </div>
 
       {/* ---- photo sheet ---- */}
@@ -348,6 +350,43 @@ export default function Today({ goHydrate }: { goHydrate: () => void }) {
           Cancel
         </SoundButton>
       </Sheet>
+    </div>
+  )
+}
+
+/** One dot per day of the challenge, filled up to today.
+    The same motif as the app icon and the share card, and it gives
+    the screen a floor on tall phones instead of trailing off into
+    white space below the list. */
+function DayGrid({ day, total }: { day: number; total: number }) {
+  const cols = Math.min(15, total)
+  return (
+    <div
+      aria-label={`Day ${day} of ${total}`}
+      style={{
+        display: 'grid',
+        gridTemplateColumns: `repeat(${cols}, 1fr)`,
+        gap: 7,
+        margin: '30px 6px 4px',
+      }}
+    >
+      {Array.from({ length: total }, (_, i) => {
+        const n = i + 1
+        const past = n < day
+        const today = n === day
+        return (
+          <span
+            key={n}
+            style={{
+              aspectRatio: '1',
+              borderRadius: '50%',
+              background: past || today ? 'var(--ink)' : 'var(--line)',
+              outline: today ? '1.5px solid var(--ink)' : 'none',
+              outlineOffset: 2.5,
+            }}
+          />
+        )
+      })}
     </div>
   )
 }
