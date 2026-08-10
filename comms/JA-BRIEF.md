@@ -16,7 +16,7 @@ Glow Within / Better Me / Sugar Free / Mental Wellness,或自建),每天勾完�
 
 | 项 | 值 |
 | --- | --- |
-| Apple 开发者账号 | `wangjyca@gmail.com`(已付 $99,Active) |
+| Apple 开发者账号 | **本 app 专属的 Apple 账号**(已付 $99,Active。具体邮箱由 King 私发,不写在公开仓库) |
 | Bundle ID(拟) | `com.jojot.app` |
 | ASC App ID | **未创建**(见 MSG-PM-001 的 J4) |
 | Team ID | 未知,待 JA 回报 |
@@ -99,6 +99,6 @@ Capacitor 项目里版本号在 `ios/App/App.xcodeproj/project.pbxproj` 的
 
 ## 收不到钱的头号原因
 
-RevenueCat 的 **In-App Purchase Key 必须是 `wangjyca@gmail.com` 这个账号生成的**。
+RevenueCat 的 **In-App Purchase Key 必须是**本 app 专属 Apple 账号**生成的**。
 用了别的账号的 key,StoreKit 2 下**交易根本不会被记录** —— RevenueCat 显示 $0,
 苹果实际在扣钱,付费用户进不去 app。详见 `docs/REVENUECAT-SETUP.md` 第 3 步。

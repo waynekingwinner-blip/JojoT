@@ -16,7 +16,7 @@ Status: OPEN
 先把背景读一遍:`comms/JA-BRIEF.md`。几个关键点:
 
 - 这是 **Capacitor** 项目,**没有 EAS**。出包走 Xcode Archive,由我(PM)来做。
-- Apple 账号 `wangjyca@gmail.com`,已付费 Active。
+- Apple 账号:本 app 专属账号,已付费 Active(邮箱由 King 私发)。
 - 硬付费墙,无免费层。
 
 下面 J1~J6 都是账号机才能做的,请按顺序做完回报。
@@ -112,7 +112,7 @@ ASC → **Users and Access → Integrations**(顶部标签)→ 左侧 **Keys →
 2. 下载 `.p8` 文件 —— **只能下载一次**
 3. 记下 **Key ID**
 
-⚠️ **这个 key 必须用 `wangjyca@gmail.com` 这个账号生成。**
+⚠️ **这个 key 必须用**本 app 专属的那个 Apple 账号**生成。**
 **绝对不要复用其他项目或其他账号的 `.p8`。** StoreKit 2 下,
 key 缺失或不属于本账号 = 交易静默丢失。
 
@@ -272,7 +272,7 @@ J5  jojot.premium.weekly:  <状态>
     jojot.premium.yearly:  <状态>
 J6  Key ID: 【已私发 King,不写此处】
     .p8 已下载并保存: <是/否>
-    是否用 wangjyca@gmail.com 生成: <是/否>
+    是否用本 app 专属 Apple 账号生成: <是/否>
 
 卡住的地方:
 <报错原文,先抹掉标识符>

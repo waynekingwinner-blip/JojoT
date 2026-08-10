@@ -31,6 +31,7 @@
 | **Issuer ID** | ASC API 凭证的一半 |
 | **Key ID** | 与 Issuer ID 组合起来就是 2/3 个凭证 |
 | **vendorNumber** | 财务报表标识 |
+| **Apple 开发者账号邮箱** | 把这个 app 和某个具体 Apple 账号公开绑定,正是隔离策略要防的 |
 
 **✅ 可以进 comms:**
 

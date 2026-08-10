@@ -17,7 +17,7 @@ RevenueCat 把这些收进一个 SDK + 后台,免费额度到 **月流水 $2,500
 ## 第 1 步 — 注册账号(现在就能做,无依赖)
 
 1. 打开 https://app.revenuecat.com/signup
-2. 用邮箱注册。**建议用你的主邮箱,不要用 `wangjyca@gmail.com`** ——
+2. 用邮箱注册。**建议用你的主邮箱,不要用 Apple 开发者账号那个邮箱** ——
    那个是苹果开发者账号,混在一起以后转让或授权会麻烦。
 3. 邮箱验证。
 4. 首次登录会让你建一个 **Project**:
@@ -148,7 +148,7 @@ Product ID 必须和 App Store Connect 里的**逐字一致**:
 - [ ] Project `JojoT` 建好
 - [ ] App 加好,bundle id 与 Xcode 一致
 - [ ] In-App Purchase Key 显示 **✅ Valid credentials**,且刷新后仍在
-- [ ] 这个 key 是 `wangjyca@gmail.com` 这个账号生成的,没和别的项目共用
+- [ ] 这个 key 是本 app 专属 Apple 账号生成的,没和别的项目共用
 - [ ] Entitlement `premium` 存在
 - [ ] 三个 product 都建好,且都挂在 `premium` 上
 - [ ] Offering `default` 是 **current**,三个 package 都挂好
