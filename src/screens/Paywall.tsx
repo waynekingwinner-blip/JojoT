@@ -10,7 +10,7 @@
    App Review reads this list (Guideline 2.3.1).
    ============================================================ */
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Check, Loader2 } from 'lucide-react'
 import { SoundButton, MoodTile, Toast } from '../components/ui'
@@ -19,10 +19,13 @@ import {
   PLANS,
   DEFAULT_PLAN,
   getPlan,
+  loadPlans,
+  purchaseMode,
   buy,
   restore,
   TERMS_URL,
   PRIVACY_URL,
+  type Plan,
   type PlanId,
 } from '../lib/purchases'
 import { playSound } from '../lib/sound'
@@ -43,6 +46,25 @@ export default function Paywall() {
   const [plan, setPlan] = useState<PlanId>(DEFAULT_PLAN)
   const [busy, setBusy] = useState<'buy' | 'restore' | null>(null)
   const [toast, setToast] = useState<string | null>(null)
+
+  /* Prices come from the store, localized. Showing hardcoded dollars
+     to someone in Tokyo is wrong, and showing any price at all when
+     the store never answered would be inventing numbers — so `plans`
+     starts empty and an empty list renders as unavailable. */
+  const [plans, setPlans] = useState<Plan[]>([])
+  const [loadingPlans, setLoadingPlans] = useState(true)
+
+  useEffect(() => {
+    let live = true
+    void loadPlans()
+      .then((p) => live && setPlans(p))
+      .finally(() => live && setLoadingPlans(false))
+    return () => {
+      live = false
+    }
+  }, [])
+
+  const unavailable = !loadingPlans && plans.length === 0
 
   const say = (m: string) => {
     setToast(m)
@@ -79,7 +101,7 @@ export default function Paywall() {
     }
   }
 
-  const selected = getPlan(plan)
+  const selected = plans.find((p) => p.id === plan) ?? getPlan(plan)
 
   return (
     <div className="screen" style={{ background: '#fff' }}>
@@ -143,7 +165,7 @@ export default function Paywall() {
 
         {/* ---- plans ---- */}
         <div className="stack" style={{ marginBottom: 18 }}>
-          {PLANS.map((p) => {
+          {plans.map((p) => {
             const on = plan === p.id
             return (
               <motion.button
@@ -188,10 +210,14 @@ export default function Paywall() {
         <SoundButton
           className="block xl"
           sound="pop"
-          disabled={busy != null}
+          disabled={busy != null || unavailable || loadingPlans}
           onClick={subscribe}
         >
-          {busy === 'buy' ? (
+          {loadingPlans ? (
+            'Loading…'
+          ) : unavailable ? (
+            'Subscriptions unavailable'
+          ) : busy === 'buy' ? (
             <motion.span
               animate={{ rotate: 360 }}
               transition={{ duration: 0.9, repeat: Infinity, ease: 'linear' }}
@@ -211,10 +237,16 @@ export default function Paywall() {
         </div>
 
         <p className="legal">
-          {selected.per}, auto-renewing. Payment is charged to your Apple ID account at
-          confirmation of purchase. The subscription renews automatically unless it is cancelled
-          at least 24 hours before the end of the current period. Manage or cancel in your
-          account settings.
+          {unavailable ? (
+            'Subscriptions could not be loaded from the App Store. Check your connection and reopen JojoT.'
+          ) : (
+            <>
+              {selected.per}, auto-renewing. Payment is charged to your Apple ID account at
+              confirmation of purchase. The subscription renews automatically unless it is
+              cancelled at least 24 hours before the end of the current period. Manage or cancel
+              in your account settings.
+            </>
+          )}
           <br />
           <a href={TERMS_URL} onClick={linkHandler(TERMS_URL)} target="_blank" rel="noreferrer">
             Terms of Use

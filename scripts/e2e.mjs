@@ -251,7 +251,11 @@ await check('re-subscribing after cancelling gets you back in', async () => {
   await wait(700)
   await page.getByText('Day 1', { exact: true }).waitFor({ timeout: 3000 })
 })
-await check('restore recovers the subscription after a reinstall', async () => {
+// The launch entitlement check asks the store directly, so a user whose
+// local state was lost is let straight back in — no paywall flash, and
+// no hunting for a Restore button. The manual Restore path is covered
+// above, by the case where the store has nothing to give back.
+await check('a lost local entitlement is recovered from the store on launch', async () => {
   // wipe app state but leave the store receipt, as a fresh install would
   await page.evaluate(
     ([k]) => {
@@ -262,9 +266,10 @@ await check('restore recovers the subscription after a reinstall', async () => {
     [KEY],
   )
   await page.reload({ waitUntil: 'networkidle' })
-  await wait(900)
-  await page.getByText('Restore Purchases').click()
   await wait(1600)
+  if (await page.getByText('Restore Purchases').isVisible().catch(() => false)) {
+    throw new Error('paywall was shown to a subscriber instead of silently recovering')
+  }
   await page.getByText('Day 1', { exact: true }).waitFor({ timeout: 3000 })
   const s = await state()
   if (s.entitlement?.planId !== 'monthly') throw new Error('restore did not reinstate the plan')

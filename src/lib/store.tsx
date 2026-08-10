@@ -5,7 +5,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
 import { CHALLENGES, type Challenge, type Task, type TaskKind } from './data'
-import { clearReceipt, type Entitlement, type PlanId } from './purchases'
+import { checkEntitlement, clearReceipt, purchaseMode, type Entitlement } from './purchases'
 import { deletePhoto } from './photos'
 
 const KEY = 'jojot:state:v1'
@@ -93,6 +93,10 @@ type Ctx = {
   /** log for viewDay */
   log: DayLog
   isPremium: boolean
+  /** false until the store has been asked. The gate must not render
+      a decision before this flips, or real subscribers get a flash
+      of the paywall on every cold start. Not persisted. */
+  premiumChecked: boolean
   waterGoalMl: number
 
   finishOnboarding: (name: string) => void
@@ -125,6 +129,7 @@ const AppCtx = createContext<Ctx | null>(null)
 export function AppProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<Persisted>(load)
   const [viewDayRaw, setViewDayRaw] = useState<number | null>(null)
+  const [premiumChecked, setPremiumChecked] = useState(false)
 
   useEffect(() => {
     try {
@@ -133,6 +138,26 @@ export function AppProvider({ children }: { children: ReactNode }) {
       /* ignore */
     }
   }, [state])
+
+  // Ask the store who this user is, once, on launch. Persisted
+  // entitlement is only a cache — the store is the authority, so a
+  // lapsed or refunded subscription closes the gate again, and a
+  // reinstall opens it without the user hunting for Restore.
+  useEffect(() => {
+    let live = true
+    void checkEntitlement()
+      .then((result) => {
+        if (!live || result.status !== 'ok') return // 'unknown' → keep the cache
+        const found = result.entitlement
+        setState((s) => (sameEntitlement(s.entitlement, found) ? s : { ...s, entitlement: found }))
+      })
+      .finally(() => {
+        if (live) setPremiumChecked(true)
+      })
+    return () => {
+      live = false
+    }
+  }, [])
 
   const allChallenges = useMemo(
     () => [...state.customChallenges, ...CHALLENGES],
@@ -199,6 +224,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setViewDay: (d) => setViewDayRaw(d),
     log,
     isPremium,
+    premiumChecked,
     waterGoalMl,
 
     finishOnboarding: (name) =>
@@ -288,7 +314,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
     },
 
     setEntitlement: (e) => setState((s) => ({ ...s, entitlement: e })),
+
+    // Only the mock can "cancel" anything. Against the real store,
+    // clearing local state would let someone believe they had
+    // unsubscribed while Apple kept billing them — and RevenueCat
+    // would hand the entitlement straight back on next launch.
+    // Cancelling lives in iOS Settings; the UI sends them there.
     cancelSubscription: () => {
+      if (purchaseMode() !== 'mock') return
       clearReceipt()
       setState((s) => ({ ...s, entitlement: null }))
     },
@@ -306,6 +339,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }
 
   return <AppCtx.Provider value={value}>{children}</AppCtx.Provider>
+}
+
+/** Avoids a pointless state write — and the re-render it causes —
+    when the store confirms exactly what was already cached. */
+function sameEntitlement(a: Entitlement | null, b: Entitlement | null): boolean {
+  if (a === b) return true
+  if (!a || !b) return false
+  return a.productId === b.productId && a.renewsISO === b.renewsISO
 }
 
 /** currentDay computed from a raw state snapshot (used inside setState). */

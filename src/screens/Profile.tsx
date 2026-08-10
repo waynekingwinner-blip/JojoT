@@ -17,7 +17,7 @@ import {
 } from 'lucide-react'
 import { useApp } from '../lib/store'
 import { BOARDS, BOOKS } from '../lib/data'
-import { getPlan, PRIVACY_URL, SUPPORT_URL } from '../lib/purchases'
+import { getPlan, purchaseMode, MANAGE_SUBSCRIPTION_URL, PRIVACY_URL, SUPPORT_URL } from '../lib/purchases'
 import { openUrl } from '../lib/openUrl'
 import { MoodTile, Sheet, SoundButton, Tappable, Toast, Toggle } from '../components/ui'
 import { isSoundEnabled, setSoundEnabled, playSound } from '../lib/sound'
@@ -126,10 +126,15 @@ export default function Profile() {
                 className="link-btn"
                 onClick={() => {
                   playSound('tap')
-                  setConfirm('cancel')
+                  // Only Apple can actually cancel. Sending people to
+                  // iOS Settings is the honest route — pretending to
+                  // cancel in-app while billing continues is exactly
+                  // the complaint that sinks apps like this one.
+                  if (purchaseMode() !== 'mock') void openUrl(MANAGE_SUBSCRIPTION_URL)
+                  else setConfirm('cancel')
                 }}
               >
-                Cancel subscription
+                {purchaseMode() === 'mock' ? 'Cancel subscription' : 'Manage subscription'}
               </button>
             </>
           ) : (

@@ -6,6 +6,11 @@ import { mkdirSync } from 'node:fs'
 const BASE = process.env.BASE || 'http://localhost:4173'
 const OUT = process.env.OUT || 'scratch'
 const KEY = 'jojot:state:v1'
+/* The launch entitlement check asks the store, and in web/mock mode the
+   store is this receipt. Seeding app state without it means the check
+   correctly concludes there is no subscription and bounces to the paywall. */
+const RECEIPT_KEY = 'jojot:receipt:v1'
+
 
 const iso = (offsetDays = 0) => {
   const d = new Date()
@@ -46,7 +51,10 @@ for (let i = 0; i < 40; i++) {
   }
 }
 
-await page.evaluate(([k, v]) => localStorage.setItem(k, v), [KEY, JSON.stringify(STATE)])
+await page.evaluate(([k, v, rk, rv]) => {
+  localStorage.setItem(k, v)
+  localStorage.setItem(rk, rv)
+}, [KEY, JSON.stringify(STATE), RECEIPT_KEY, JSON.stringify(STATE.entitlement)])
 await page.reload({ waitUntil: 'networkidle' })
 await page.waitForTimeout(900)
 

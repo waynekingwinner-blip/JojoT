@@ -19,7 +19,7 @@ import { primeAudio } from './lib/sound'
 import { resyncQuietly } from './lib/reminders'
 
 export default function App() {
-  const { state, challenge, isPremium } = useApp()
+  const { state, challenge, isPremium, premiumChecked } = useApp()
   const [tab, setTab] = useState<Tab>('today')
 
   // unlock audio on first interaction (iOS requirement)
@@ -34,13 +34,21 @@ export default function App() {
     void resyncQuietly(state.remindersOn)
   }, [state.remindersOn])
 
-  const flow: 'onboarding' | 'paywall' | 'choose' | 'app' = !state.onboarded
+  /* The gate lives here, at the routing layer, rather than on any
+     one button — there is no screen to reach around it.
+
+     'checking' holds an empty frame until the store has answered.
+     Deciding before that would flash the paywall at people who are
+     already paying, every single cold start. */
+  const flow: 'checking' | 'onboarding' | 'paywall' | 'choose' | 'app' = !state.onboarded
     ? 'onboarding'
-    : !isPremium
-      ? 'paywall'
-      : !challenge
-        ? 'choose'
-        : 'app'
+    : !premiumChecked
+      ? 'checking'
+      : !isPremium
+        ? 'paywall'
+        : !challenge
+          ? 'choose'
+          : 'app'
 
   return (
     <div className="app-root">
@@ -51,6 +59,8 @@ export default function App() {
             bulletproof: the new flow always mounts immediately instead of
             waiting for the previous screen's exit animation. */}
         <motion.div key={flow} {...enter} className="screen">
+          {flow === 'checking' && <div className="screen" aria-busy="true" />}
+
           {flow === 'onboarding' && <Onboarding />}
 
           {flow === 'paywall' && <Paywall />}

@@ -3,6 +3,11 @@ import { chromium } from 'playwright'
 
 const BASE = process.env.BASE || 'http://localhost:4173'
 const KEY = 'jojot:state:v1'
+/* The launch entitlement check asks the store, and in web/mock mode the
+   store is this receipt. Seeding app state without it means the check
+   correctly concludes there is no subscription and bounces to the paywall. */
+const RECEIPT_KEY = 'jojot:receipt:v1'
+
 
 const iso = (offsetDays = 0) => {
   const d = new Date()
@@ -45,7 +50,10 @@ async function waitForServer(page) {
 }
 
 const set = async (page, value) => {
-  await page.evaluate(([k, v]) => localStorage.setItem(k, v), [KEY, value])
+  await page.evaluate(([k, v, rk, rv]) => {
+    localStorage.setItem(k, v)
+    localStorage.setItem(rk, rv)
+  }, [KEY, value, RECEIPT_KEY, JSON.stringify(ENTITLEMENT)])
   await page.reload({ waitUntil: 'networkidle' })
   await page.waitForTimeout(1100)
 }

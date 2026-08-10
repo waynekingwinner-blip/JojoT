@@ -11,6 +11,11 @@ import { chromium } from 'playwright'
 
 const BASE = process.env.BASE || 'http://localhost:4173'
 const KEY = 'jojot:state:v1'
+/* The launch entitlement check asks the store, and in web/mock mode the
+   store is this receipt. Seeding app state without it means the check
+   correctly concludes there is no subscription and bounces to the paywall. */
+const RECEIPT_KEY = 'jojot:receipt:v1'
+
 
 // Channel spread allowed before we call something "coloured".
 // Computed styles are exact, so 2 is generous. Pixels get more slack because
@@ -170,9 +175,19 @@ let worstPixel = 0
 
 for (const screen of SCREENS) {
   if (screen.state) {
-    await page.evaluate(([k, v]) => localStorage.setItem(k, v), [KEY, JSON.stringify(screen.state)])
+    await page.evaluate(
+      ([k, v, rk, rv]) => {
+        localStorage.setItem(k, v)
+        if (rv) localStorage.setItem(rk, rv)
+        else localStorage.removeItem(rk)
+      },
+      [KEY, JSON.stringify(screen.state), RECEIPT_KEY, screen.state.entitlement ? JSON.stringify(screen.state.entitlement) : null],
+    )
   } else {
-    await page.evaluate((k) => localStorage.removeItem(k), KEY)
+    await page.evaluate(([k, rk]) => {
+      localStorage.removeItem(k)
+      localStorage.removeItem(rk)
+    }, [KEY, RECEIPT_KEY])
   }
   await page.reload({ waitUntil: 'networkidle' })
   await page.waitForTimeout(900)

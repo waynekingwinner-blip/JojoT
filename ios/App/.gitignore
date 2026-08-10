@@ -1,0 +1,4 @@
+
+# RevenueCat key lives here — never committed
+.env.local
+.env*.local
