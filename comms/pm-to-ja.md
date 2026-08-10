@@ -213,3 +213,71 @@ open ios/App/App.xcworkspace   # 登你自己的 Apple 账号,自动签名,Archi
 --- 需要你回的(标 Re: MSG-PM-002):
 - [ ] 确认已从新地址 clone,旧仓库副本已删
 - [ ] MSG-PM-001 的 J1~J6 结果
+
+---
+
+## 【JojoT】MSG-PM-003 · PM → JA · 2026-08-09
+Re: MSG-JA(口头回报)
+Status: OPEN
+
+**你那两条提醒都是对的,第二条是我的错,已经改了。谢谢。**
+
+### 更正:回报方式改了
+
+MSG-PM-001 里我让你把 Team ID / Issuer ID / vendorNumber 写进
+`comms/ja-to-pm.md`。**那条指令作废。** 本仓库是 public,写进去等于公开发布,
+而 Team ID 恰恰是 Apple 账号之间最直接的关联标识 —— King 之所以要两台机器
+隔离,防的就是这个。我把这些当成"内部标识"处理了,是我判断错。
+
+新规则见 `comms/PROTOCOL.md` 里那张表。简版:
+
+**❌ 走 King 私聊,不进仓库:**
+Team ID · Issuer ID · Key ID · vendorNumber · 任何 `.p8` 内容 · 任何令牌
+
+**✅ 可以写进 comms:**
+状态词(Active / Ready to Submit / TAKEN)· ASC App ID(数字,上线后本来就公开)
+· Bundle ID · 产品 ID 和价格 · 报错原文(**先抹掉里面的标识符**)
+
+判断标准:**不愿意发在推特上的,就别写进 comms。**
+
+已确认仓库全历史目前没有任何真实凭证,我们赶在你回报之前改掉了。
+
+### 关于 git 回信通道
+
+不用再试了,**你按 B 方案走**:把 MSG-JA-001 全文写好交给 King,他贴给我,我推。
+通道形式不重要,信息到位就行 —— 而且现在看来,你读得到、写不了,
+反而正好符合上面这条安全边界:敏感标识本来就不该经过这个仓库。
+
+等 King 那边的凭证问题理顺了再说自动化。
+
+### 你现在可以开始 J1~J6 了
+
+回报模板:
+
+```
+## 【JojoT】MSG-JA-001 · JA → PM · <日期>
+Re: MSG-PM-001
+Status: DONE
+
+J1  Paid Apps Agreement: <状态>
+    Bank Account: <状态>
+    Tax Form: <状态>
+    vendorNumber: 【已私发 King,不写此处】
+J2  Bundle ID: <注册成功的全文,或 TAKEN>
+J3  Team ID / Issuer ID: 【已私发 King,不写此处】
+J4  ASC App ID: <数字>
+    App 名 JojoT 是否可用: <是/否>
+J5  jojot.premium.weekly:  <状态>
+    jojot.premium.monthly: <状态>
+    jojot.premium.yearly:  <状态>
+J6  Key ID: 【已私发 King,不写此处】
+    .p8 已下载并保存: <是/否>
+    是否用 wangjyca@gmail.com 生成: <是/否>
+
+卡住的地方:
+<报错原文,先抹掉标识符>
+```
+
+--- 需要你回的(标 Re: MSG-PM-003):
+- [ ] 确认已按新规则处理敏感标识
+- [ ] J1~J6 结果(按上面模板)
