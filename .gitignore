@@ -30,3 +30,7 @@ vite.config.d.ts
 # e2e failure screenshots
 e2e-failures/
 scratch/
+
+# RevenueCat key lives here — never committed
+.env.local
+.env*.local

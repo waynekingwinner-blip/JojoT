@@ -1,4 +1,3 @@
-
-# RevenueCat key lives here — never committed
-.env.local
-.env*.local
+build/
+Pods/
+Public/
