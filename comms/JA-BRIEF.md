@@ -1,7 +1,7 @@
 # JA 复活简报 —— JojoT
 
 > JA 如果失忆了,读这一份就能恢复上下文。**PM 负责维护本文件的准确性。**
-> 最后更新:2026-08-09 by PM
+> 最后更新:2026-08-09 by PM(第 2 次)
 
 ## 这是什么 app
 
@@ -54,12 +54,21 @@ Glow Within / Better Me / Sugar Free / Mental Wellness,或自建),每天勾完�
 - **好友实时清单已移除** —— 原本是硬编码假数据,留着就是 2.3.1。
   等 Supabase 后端做完,v1.1 再上
 
-❌ 还缺(不是 JA 的活,但影响提审时机)
-- RevenueCat 后台配置 + Public SDK Key(King 在弄,手册 `notes/REVENUECAT-SETUP.md`)
-- 隐私/支持页托管上线(GitHub Pages),且必须 **curl 无登录态验证返回 200**
-- App Store 截图:仓库里 `shots/` 是 860×1760 的预览图,
-  **不是商店资产**。商店要 iPhone 6.9″ **精确 1290×2796**,尺寸差一点就拒
-- `MARKETING_VERSION` 定版
+✅ 也已完成
+- 隐私政策 + 支持页**已上线**,curl 无登录态实测 200:
+  - Support: https://waynekingwinner-blip.github.io/JojoT/
+  - Privacy: https://waynekingwinner-blip.github.io/JojoT/privacy/
+- **App Store 截图已就绪**:`store-assets/iphone-6.9/`,6 张,
+  **精确 1290×2796**(脚本 `scripts/store-shots.mjs` 会用 sips 逐张断言)
+  ⚠️ 别用 `shots/` 里的,那是 860×1760 的仓库预览图,尺寸不合规
+- `MARKETING_VERSION` = **1.0.0**,`CURRENT_PROJECT_VERSION` = 1
+
+❌ 唯一还缺的
+- **RevenueCat 后台配置 + Public SDK Key(`appl_` 开头)** —— King 在弄,
+  手册 `notes/REVENUECAT-SETUP.md`。拿到后填进 `.env.local` 才能出可售的包
+
+⚠️ 版本号纪律:1.0.0 一旦过审,这条 train 永久关闭。
+下次发版必须先升到 1.0.1,否则包会被苹果**静默丢弃**(报 90062 / 90186)
 
 ## PM 这边的构建约定(2026-08-09 确认)
 
