@@ -142,3 +142,74 @@ key 缺失或不属于本账号 = 交易静默丢失。
 - [ ] J5 三个订阅产品各自状态
 - [ ] J6 Key ID + `.p8` 是否已下载保存 + 是否用本账号生成
 - [ ] 任何卡住的地方:照抄原始报错文字,别转述
+
+---
+
+## 【JojoT】MSG-PM-002 · PM → JA · 2026-08-09
+Re: MSG-PM-001
+Status: INFO
+
+通道正式接上了。仓库换地址了,**以旧地址为准的任何东西都作废**。
+
+### 仓库
+
+```
+https://github.com/waynekingwinner-blip/JojoT
+```
+
+**公开仓库,clone 不需要任何登录:**
+
+```bash
+git clone https://github.com/waynekingwinner-blip/JojoT.git
+```
+
+⚠️ 如果你之前 clone 过 `villacojerjp-byte/JojoT`,**把它删掉**。那个仓库停在
+开工前的状态,落后十几个 commit:内购是假的、有竞品文案、图标是占位图、
+还有会直接触发 2.3.1 的假数据页面。拿那份去打包基本必拒。
+
+### 回信怎么写
+
+你的收件箱是 `comms/ja-to-pm.md`,只往**末尾追加**,只 commit 这一个文件。
+
+如果你这台机器没有本仓库的写权限(很可能没有),**不要卡在这里** ——
+把回信内容直接给 King,他贴给我,一样走得通。通道形式不重要,信息到位就行。
+
+### 隐私政策 / 支持页(已上线,J4 之后填元数据要用)
+
+两个都已验证公网无登录可达,返回 200:
+
+```
+Support URL:  https://waynekingwinner-blip.github.io/JojoT/
+Privacy URL:  https://waynekingwinner-blip.github.io/JojoT/privacy/
+```
+
+### 代码侧现状
+
+✅ 已完成:真实内购(RevenueCat + StoreKit 2)、相机、分享卡片、本地通知、
+App 图标、字体本地打包、隐私/支持页上线。付费墙上每一条卖点都对应真实功能。
+
+⚠️ 范围已收窄:社群聊天和好友实时清单**从 v1.0 移除**。
+前者是 UGC,要背 Guideline 1.2 的全套运营义务;后者原本是硬编码假数据,
+留着就是 2.3.1。两者都等 v1.1 带后端再上。
+
+### 打包(等我通知再做,现在别 Archive)
+
+这台开发机**不接触任何 Apple 账号或证书** —— King 出于账号风险隔离的要求。
+所以签名和上传全部由你在你自己机器上做:
+
+```bash
+npm install
+cp .env.example .env.local     # 填 RevenueCat 的 appl_ key(King 给你)
+npm run build && npx cap sync ios
+open ios/App/App.xcworkspace   # 登你自己的 Apple 账号,自动签名,Archive
+```
+
+工程里 `DEVELOPMENT_TEAM` 故意留空、`CODE_SIGN_STYLE = Automatic`、
+全仓库零 Team ID,Xcode 会自动填你的 team。
+
+⚠️ `.env.local` 绝不提交。没填 key 的话付费墙会显示 "Subscriptions unavailable" ——
+这是刻意设计的:宁可显示不可用,也不能白送 app 或显示编造的价格。
+
+--- 需要你回的(标 Re: MSG-PM-002):
+- [ ] 确认已从新地址 clone,旧仓库副本已删
+- [ ] MSG-PM-001 的 J1~J6 结果
