@@ -173,13 +173,6 @@ export async function initPurchases(): Promise<void> {
   }
 }
 
-function planIdFor(pkg: PurchasesPackage): PlanId | null {
-  const entry = (Object.entries(PACKAGE_FOR) as [PlanId, string][]).find(
-    ([, id]) => id === pkg.identifier,
-  )
-  return entry?.[0] ?? null
-}
-
 /** Derive the "$4.16 / month"-style line from the real price. */
 function equivalentLine(amount: number, currency: string, id: PlanId): string {
   const fmt = (n: number) => {
@@ -357,5 +350,5 @@ export async function restore(): Promise<PurchaseResult> {
 export const MANAGE_SUBSCRIPTION_URL = 'https://apps.apple.com/account/subscriptions'
 
 export const TERMS_URL = 'https://www.apple.com/legal/internet-services/itunes/dev/stdeula/'
-export const PRIVACY_URL = 'https://villacojerjp-byte.github.io/JojoT/privacy/'
-export const SUPPORT_URL = 'https://villacojerjp-byte.github.io/JojoT/'
+export const PRIVACY_URL = 'https://waynekingwinner-blip.github.io/JojoT/privacy/'
+export const SUPPORT_URL = 'https://waynekingwinner-blip.github.io/JojoT/'

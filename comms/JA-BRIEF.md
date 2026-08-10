@@ -22,7 +22,7 @@ Glow Within / Better Me / Sugar Free / Mental Wellness,或自建),每天勾完�
 | Team ID | 未知,待 JA 回报 |
 | Issuer ID | 未知,待 JA 回报 |
 | vendorNumber | 未知,待 JA 回报 |
-| GitHub 仓库 | `villacojerjp-byte/JojoT`,工作分支 `main` |
+| GitHub 仓库 | `waynekingwinner-blip/JojoT`,工作分支 `main` |
 
 ## 订阅产品(硬付费墙,无免费层)
 
