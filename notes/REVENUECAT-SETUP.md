@@ -26,7 +26,28 @@ RevenueCat 把这些收进一个 SDK + 后台,免费额度到 **月流水 $2,500
 
 ---
 
-## 第 2 步 — 添加 iOS App(依赖:Devin 的 **D2** 确认 bundle id)
+## ⚠️ 关键依赖:第 2 步就会卡住
+
+**实测(2026-08-10):RevenueCat 的 "New App Store app" 表单把
+In-App Purchase **Key ID** 和 **Issuer ID** 列为必填 —— 不填就不让保存。**
+
+也就是说,**你没法先建好 App 再回头补密钥**。正确顺序是:
+
+```
+JA 先做 J2(bundle id)、J3(Issuer ID)、J6(生成 .p8 + Key ID)
+                    ↓
+        King 才能做下面的第 2 步
+```
+
+在拿到 Issuer ID 和 Key ID 之前,你在 RevenueCat 能做完的只有:
+✅ 建 Project · ✅ Entitlement `premium` · ✅ Offering 三个套餐
+
+⚠️ 别被 "Get started with a Test Store" 那个 key 骗了 —— 那是假商店,
+用它打包等于付费墙是假的,收不到钱,审核也会发现。
+
+---
+
+## 第 2 步 — 添加 iOS App(依赖:JA 的 **J2 + J3 + J6**)
 
 左侧 **Project Settings → Apps → + New App**
 
@@ -34,7 +55,7 @@ RevenueCat 把这些收进一个 SDK + 后台,免费额度到 **月流水 $2,500
 | --- | --- |
 | Platform | **App Store** |
 | App name | `JojoT` |
-| Bundle ID | `com.jojot.app`(以 Devin D2 回报的为准) |
+| Bundle ID | `com.jojot.app`(以 JA J2 回报的为准) |
 
 ⚠️ **Bundle ID 必须和 Xcode 里的完全一致,一个字符都不能差。**
 现在代码里是 `com.jojot.app`(见 `capacitor.config.ts`)。
@@ -44,7 +65,9 @@ RevenueCat 把这些收进一个 SDK + 后台,免费额度到 **月流水 $2,500
 
 ## 第 3 步 — 配 In-App Purchase Key ⚠️ 最容易出事的一步
 
-**依赖:Devin 的 D6**(他会给你 Key ID,并把 `.p8` 文件存好)
+**依赖:JA 的 J6**(他会给你 Key ID,并把 `.p8` 文件存好)
+
+> 实际上这一步和第 2 步是同一个表单 —— 建 App 的时候就必须填。
 
 这一步做错的症状极其阴险:RevenueCat 后台一堆 customer 连进来,但
 **Active Subscriptions / MRR 全是 0**,而苹果那边**真的在扣钱**。
@@ -60,8 +83,8 @@ RevenueCat 把这些收进一个 SDK + 后台,免费额度到 **月流水 $2,500
 3. 点 **Add new key** —— ⚠️ **不是 `Select existing key`**
    (复用别的项目的 key 是最经典的坑,界面会显示 `⚠️ Credentials need attention`,
    交易照样全丢)
-4. 上传 Devin 给你的 `.p8` 文件,填 **Key ID** 和 **Issuer ID**
-   (Issuer ID 也在 Devin 的 D3 回报里)
+4. 上传 JA 给你的 `.p8` 文件,填 **Key ID** 和 **Issuer ID**
+   (Issuer ID 也在 JA 的 J3 回报里)
 5. ⚠️ **保存按钮在整页最底部,要滚到底**,很多人没看见以为存了
 6. 确认状态变成 **✅ Valid credentials**
 7. **刷新页面再看一次** —— 确认真的存住了
@@ -89,7 +112,7 @@ RevenueCat 把这些收进一个 SDK + 后台,免费额度到 **月流水 $2,500
 
 ---
 
-## 第 5 步 — 建 Products(依赖:Devin 的 **D5**)
+## 第 5 步 — 建 Products(依赖:JA 的 **J5**)
 
 左侧 **Product catalog → Products → + New Product**,建三个。
 Product ID 必须和 App Store Connect 里的**逐字一致**:
@@ -161,7 +184,7 @@ Product ID 必须和 App Store Connect 里的**逐字一致**:
 上线 48 小时后,**别信 RevenueCat 的仪表盘,去查苹果的账**:
 
 ASC → Sales and Trends,或用 App Store Connect API 的 `salesReports`
-(需要 vendorNumber,Devin 的 D1 会回报)。
+(需要 vendorNumber,JA 的 J1 会回报)。
 
 两边数字对不上 = In-App Purchase Key 有问题,回第 3 步。
 这不是杞人忧天 —— 真实案例是 RevenueCat 显示 $0、苹果实际收了 $97。
