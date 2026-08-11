@@ -281,3 +281,75 @@ J6  Key ID: 【已私发 King,不写此处】
 --- 需要你回的(标 Re: MSG-PM-003):
 - [ ] 确认已按新规则处理敏感标识
 - [ ] J1~J6 结果(按上面模板)
+
+---
+
+## 【JojoT】MSG-PM-007 · PM → JA · 2026-08-10
+Re: MSG-JA-002
+Status: OPEN
+
+**RevenueCat 全部配置完成,可以打包了。**
+
+- In-App Purchase Key(J6)已上传,✅ **Valid credentials**
+  反向验证确认:JojoT **没有**复用 BendyGoal / jojotalk 的旧 key
+- App Store Connect API Key(J7)已上传
+- Entitlement:`premium`
+- Offering:weekly $7.99 / monthly $14.99 / yearly $49.99,已设为 **current**
+- Public SDK Key:**King 私发给你**(以 `appl_` 开头,不在本仓库)
+
+你 J1~J7 的成果我全核过了,没有问题。三个订阅产品的审核截图那件事抓得好 ——
+原本三个全缺,缺了会卡住提交。
+
+### 打包
+
+```bash
+git pull
+npm install
+cp .env.example .env.local
+# 把 King 给你的那行填进去:
+#   VITE_REVENUECAT_IOS_KEY=appl_...
+npm run build && npx cap sync ios
+open ios/App/App.xcworkspace
+```
+
+Xcode:
+
+1. **App** target → Signing & Capabilities → 登**你自己的** Apple 账号
+   工程里 `DEVELOPMENT_TEAM` 故意留空、`CODE_SIGN_STYLE = Automatic`,
+   Xcode 会自动填你的 team。King 要求 PM 这台开发机不接触任何 Apple 凭证。
+2. 确认 **In-App Purchase** capability 在
+3. 顶部设备选 **Any iOS Device (arm64)**
+4. **Product → Archive**
+5. Organizer → **Distribute App → App Store Connect → Upload**
+
+版本号已设好:`MARKETING_VERSION 1.0.0` / `CURRENT_PROJECT_VERSION 1`。**别改。**
+
+⚠️ **上传后别信 Xcode 的成功提示。** 等 5~15 分钟去 ASC → TestFlight,
+确认 build 出现且 **processingState = VALID**。
+如果 Xcode 报错但 ASC 里 build 已经在了 —— **那就是传上去了,不要重传**,
+重传会撞重复提交。
+
+⚠️ `.env.local` 绝不提交(已在 `.gitignore` 里)。
+
+### 打包成功后
+
+按 `comms/LAUNCH-PLAYBOOK.md` 走:
+
+| 节 | 内容 |
+| --- | --- |
+| 2 | 元数据全文 ⚠️ Description 末尾 EULA 链接必须保留 |
+| 3 | 截图用 `store-assets/iphone-6.9/`(1290×2796)⚠️ **不要用 `shots/`** |
+| 4 | Age Rating:UGC = No,Medical = None |
+| 5 | App Privacy:只勾 Identifiers + Purchases,均不用于追踪、不关联身份 |
+| 6 | App Review Notes:硬付费墙 sandbox 解锁说明,原文照抄 |
+| 8 | 提交前自查表,逐条打勾 |
+
+### 🛑 停
+
+自查表全绿后,在 `comms/ja-to-pm.md` 写一条 `Status: READY`。
+**Submit for Review 等 King 明确下令,不要碰那个按钮。**
+
+--- 需要你回的(标 Re: MSG-PM-007):
+- [ ] build 已上传,且 ASC 里 processingState = VALID
+- [ ] 元数据 / 截图 / 问卷 / 审核备注 全部填完
+- [ ] 第 8 节自查表逐条结果
