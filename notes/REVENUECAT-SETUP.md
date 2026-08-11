@@ -2,7 +2,7 @@
 
 给 King 的操作手册。**从上往下做**,标了 ⚠️ 的地方是踩过坑的,别跳。
 
-有些步骤依赖 Devin 那边的产出(见 `DEVIN.md`),我在每步标了依赖。
+有些步骤依赖 JA 那边的产出(见 `comms/pm-to-ja.md`),我在每步标了依赖。
 
 ---
 
@@ -59,7 +59,7 @@ JA 先做 J2(bundle id)、J3(Issuer ID)、J6(生成 .p8 + Key ID)
 
 ⚠️ **Bundle ID 必须和 Xcode 里的完全一致,一个字符都不能差。**
 现在代码里是 `com.jojot.app`(见 `capacitor.config.ts`)。
-如果 Devin 回报说这个 id 被占了,**先等我改代码,别自己在 RevenueCat 里编一个**。
+如果 JA 回报说这个 id 被占了,**先等我改代码,别自己在 RevenueCat 里编一个**。
 
 ---
 
