@@ -5,7 +5,7 @@
 
 ## 这是什么 app
 
-**JojoT** —— 75 天挑战打卡 App。选一个挑战(75 Hard / 75 Medium / 75 Soft /
+**JojoT** —— 75 天挑战打卡 App。选一个挑战(75 Strict / 75 Medium / 75 Soft /
 Glow Within / Better Me / Sugar Free / Mental Wellness,或自建),每天勾完一张
 待办清单,追踪喝水、步数、每日进度照片,并能看到朋友的清单。
 

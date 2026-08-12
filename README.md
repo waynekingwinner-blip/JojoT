@@ -22,7 +22,7 @@ There is no free tier: subscribing or restoring a purchase is the only way in.
 | --- | --- |
 | **Onboarding** | Three editorial slides (*Keep the promise* / *One list, every day* / *Watch it add up*) then your name |
 | **Paywall** | Weekly $7.99 · Monthly $14.99 · Yearly $49.99, Restore Purchases, auto-renewal disclosure, Terms & Privacy |
-| **Select your challenge** | 75 Day Hard, 75 Medium, 75 Soft, Glow Within, Better Me, Sugar Free, Mental Wellness — plus **Create your own** |
+| **Select your challenge** | 75 Strict, 75 Medium, 75 Soft, Glow Within, Better Me, Sugar Free, Mental Wellness — plus **Create your own** |
 | **Challenge detail** | `+N joined` pill, mood board, the numbered sticky-note rule list, join CTA |
 | **Today** | `Day N`, day-scrubber segments, your editable to-do list with live water / step / photo readouts, share card |
 | **Water** | Tumbler that fills, ±250 ml, quick adds, goal taken from the active challenge, auto-ticks the water task at 100% |

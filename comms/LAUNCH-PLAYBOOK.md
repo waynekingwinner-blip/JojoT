@@ -55,9 +55,9 @@ Pick a 75-day challenge or write your own. One list a day, water, steps and a da
 ### Keywords(100 字符上限,逗号分隔,不要空格)
 
 ```
-75 hard,75 soft,challenge,habit,tracker,streak,daily,routine,water,steps,discipline,checklist
+75 day challenge,75 soft,75 medium,challenge,habit,tracker,streak,routine,water,steps,discipline
 ```
-*(93 字符)*
+*(96 字符)*
 
 ### Description
 
@@ -70,7 +70,7 @@ Seventy-five days. One list a day. JojoT keeps the promise you keep making to yo
 Pick a challenge and work through its list every day — or write your own from scratch. Every day you finish fills in, until the whole run is there in front of you.
 
 CHOOSE YOUR CHALLENGE
-• 75 Day Hard — no compromises, no excuses
+• 75 Strict — no compromises, no excuses
 • 75 Medium — the balanced middle path
 • 75 Soft — gentle, sustainable, kind to your body
 • Glow Within — radiance from the inside out
@@ -180,7 +180,13 @@ First release.
 ※※ ⚠️ **必须选 None,而且 app 内外都不能出现医疗声明**(治疗、缓解疼痛、预防损伤、康复、理疗、医疗级)。写了就会被划进 EU MDR 监管范围。描述里已经明确写了「not medical advice」。
 ※※※ 社群聊天已从 v1.0 移除,没有任何用户生成内容,也没有用户之间的交流。
 
-预期结果:**4+**
+⚠️ **实测更正(2026-08-11,JA 报告):ASC 换成了新版 7 步问卷**,多了一题
+上表没有的 **「Health or Wellness Topics」**(self-care / 生活方式建议)。
+预设挑战确实属于生活方式建议,**如实答 Yes**。
+
+**因此实际分级是 9+,不是本表原先预期的 4+。** 这是正确结果 ——
+竞品 Her 75 也是 9+。不要为了压到 4+ 而谎报。
+Medical or Treatment Information 仍然选 **None**,Override 选 Not Applicable。
 
 ---
 

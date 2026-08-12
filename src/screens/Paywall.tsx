@@ -33,7 +33,7 @@ import { haptic } from '../lib/haptics'
 import { linkHandler } from '../lib/openUrl'
 
 const PERKS = [
-  'Every challenge — 75 Hard, Medium, Soft & more',
+  'Every challenge — 75 Strict, Medium, Soft & more',
   'Build your own challenge and to-do list',
   'Water, steps & daily progress pictures',
   'Share your day as a progress card',

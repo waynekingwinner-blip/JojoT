@@ -51,8 +51,8 @@ const MOOD = {
 export const CHALLENGES: Challenge[] = [
   {
     id: 'hard',
-    name: '75 Day Hard',
-    short: '75 Hard',
+    name: '75 Strict',
+    short: '75 Strict',
     tagline: 'no compromises, no excuses',
     days: 75,
     intensity: 'hard',

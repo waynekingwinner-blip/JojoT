@@ -83,7 +83,7 @@ await set(page, JSON.stringify({ onboarded: true, name: 'Sofia', entitlement: EN
 await page.screenshot({ path: 'shots/03-challenges.png' })
 
 // 3b) Challenge detail
-await page.getByText('75 Day Hard', { exact: true }).first().click().catch(() => {})
+await page.getByText('75 Strict', { exact: true }).first().click().catch(() => {})
 await page.waitForTimeout(900)
 await page.screenshot({ path: 'shots/03b-challenge-detail.png' })
 

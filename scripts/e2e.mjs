@@ -122,18 +122,18 @@ await check('purchase unlocks the app and records an entitlement', async () => {
 console.log('\n— choosing a challenge —')
 await check('challenge list renders', async () => {
   await page.getByText('soft, medium, hard, better me…').waitFor({ timeout: 3000 })
-  for (const name of ['75 Day Hard', '75 Medium', '75 Soft', 'Glow Within', 'Better Me', 'Sugar Free', 'Mental Wellness']) {
+  for (const name of ['75 Strict', '75 Medium', '75 Soft', 'Glow Within', 'Better Me', 'Sugar Free', 'Mental Wellness']) {
     await page.getByText(name, { exact: true }).first().waitFor({ timeout: 3000 })
   }
 })
 await check('challenge detail shows rules + joined count', async () => {
-  await page.getByText('75 Day Hard', { exact: true }).first().click()
+  await page.getByText('75 Strict', { exact: true }).first().click()
   await wait(700)
   await page.getByText('+6,256 joined').waitFor({ timeout: 3000 })
   await page.getByText('Take a progress picture every day').waitFor({ timeout: 3000 })
 })
 await check('starting the challenge lands on Today at day 1', async () => {
-  await page.getByRole('button', { name: /Start 75 Day Hard/ }).click()
+  await page.getByRole('button', { name: /Start 75 Strict/ }).click()
   await wait(1000)
   await page.getByText('Day 1', { exact: true }).waitFor({ timeout: 3000 })
   const s = await state()

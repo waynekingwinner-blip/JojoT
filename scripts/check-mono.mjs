@@ -65,7 +65,7 @@ const SCREENS = [
     } },
   { name: 'challenges', state: { onboarded: true, name: 'Sofia', entitlement: ENTITLEMENT } },
   { name: 'challenge-detail', state: { onboarded: true, name: 'Sofia', entitlement: ENTITLEMENT }, after: async (p) => {
-      await p.getByText('75 Day Hard', { exact: true }).first().click()
+      await p.getByText('75 Strict', { exact: true }).first().click()
       await p.waitForTimeout(700)
     } },
   { name: 'create-challenge', state: { onboarded: true, name: 'Sofia', entitlement: ENTITLEMENT }, after: async (p) => {
