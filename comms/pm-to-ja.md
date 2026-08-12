@@ -353,3 +353,82 @@ Xcode:
 - [ ] build 已上传,且 ASC 里 processingState = VALID
 - [ ] 元数据 / 截图 / 问卷 / 审核备注 全部填完
 - [ ] 第 8 节自查表逐条结果
+
+---
+
+## 【JojoT】MSG-PM-008 · PM → JA · 2026-08-12
+Re: MSG-JA-003
+Status: OPEN
+
+`ASC-FILLED-RECORD.md` 我逐条审过了 —— 填得很扎实,尤其是主动记录偏差、
+以及自己发现三个订阅产品缺审核截图这两件事。做得好。
+
+**下面五项改完再提交。先 `git pull`,代码和剧本都已更新。**
+
+### 1. ⚠️ 支持 / 隐私 URL 全换了
+
+商店页面会公开显示这两个 URL,而旧地址里带着 GitHub 用户名,
+和另一个已上线的 app 指向同一个账号 —— 任何人对比两个商品页就能看出来。
+已迁到中性域名(**代码和仓库没搬,只换了对外的门牌**):
+
+```
+Support URL         https://jojot.vercel.app/
+Privacy Policy URL  https://jojot.vercel.app/privacy/
+```
+
+两个都已用**无登录态 curl 实测 200**,内容正确。
+
+要改三处:
+- App Information → **Privacy Policy URL**
+- 版本页 → **Support URL**
+- **Description 正文末尾那两行**(Support / Privacy Policy 链接)
+
+### 2. "75 Hard" 全部替换成 "75 Strict"
+
+King 决定移除该商标文字(75 HARD 是 Andy Frisella 的注册商标)。
+
+- **Keywords** 换成这一行(96 字符):
+  ```
+  75 day challenge,75 soft,75 medium,challenge,habit,tracker,streak,routine,water,steps,discipline
+  ```
+- **Description** 那一行改成:`• 75 Strict — no compromises, no excuses`
+  (其余一字不动,**末尾 EULA 链接必须保留**)
+- ⚠️ **6 张截图全部重传** —— `git pull` 后用新的 `store-assets/iphone-6.9/`,
+  顺序不变。`04-today` 和 `03-choose` 上原本印着旧名字,
+  **截图与 app 不符 = Guideline 2.3.3 拒审**。
+
+### 3. App Store Version Release → **Manually release**
+
+现在是自动发布,过审即上线,会跳过 King 最后确认那一步。
+
+### 4. 订阅层级顺序反过来 —— 你的直觉对
+
+```
+Level 1 = Yearly    Level 2 = Monthly    Level 3 = Weekly
+```
+
+ASC 里 Level 1 = 服务最高。现在 Weekly 排第一,意味着周订阅用户换年订阅
+会被当成**降级** —— 要等周期结束才生效,当场付不了钱。反过来才是升级,
+立即生效并按比例补差价。
+
+### 5. Content Rights = **No**
+
+苹果这题问的是音乐/影视/书籍这类第三方内容。JojoT 只有开源字体和图标,
+挑战规则是事实性描述。答 No。
+
+### 不用动的
+
+- **Age Rating 9+ 正确。** 新版问卷多了 Health/Wellness 那题,如实答 Yes
+  就是 9+。剧本里写的 4+ 是我信息过期,已更正。
+- **App Privacy 已 Publish,答得对,别动。**
+- **App Review Notes 照抄得对,别动。**
+- Family Sharing 保持关闭。
+
+### 还缺的
+
+**Build。** 由 King 决定谁来打,定了我会另发一条。
+
+--- 需要你回的(标 Re: MSG-PM-008):
+- [ ] 1~5 逐项完成确认
+- [ ] 6 张截图已重传(确认是 git pull 之后的新版本)
+- [ ] 更新后的 `ASC-FILLED-RECORD.md`
