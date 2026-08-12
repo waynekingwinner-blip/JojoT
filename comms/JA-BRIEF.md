@@ -56,8 +56,8 @@ Glow Within / Better Me / Sugar Free / Mental Wellness,或自建),每天勾完�
 
 ✅ 也已完成
 - 隐私政策 + 支持页**已上线**,curl 无登录态实测 200:
-  - Support: https://waynekingwinner-blip.github.io/JojoT/
-  - Privacy: https://waynekingwinner-blip.github.io/JojoT/privacy/
+  - Support: https://jojot.vercel.app/
+  - Privacy: https://jojot.vercel.app/privacy/
 - **App Store 截图已就绪**:`store-assets/iphone-6.9/`,6 张,
   **精确 1290×2796**(脚本 `scripts/store-shots.mjs` 会用 sips 逐张断言)
   ⚠️ 别用 `shots/` 里的,那是 860×1760 的仓库预览图,尺寸不合规

@@ -179,8 +179,8 @@ git clone https://github.com/waynekingwinner-blip/JojoT.git
 两个都已验证公网无登录可达,返回 200:
 
 ```
-Support URL:  https://waynekingwinner-blip.github.io/JojoT/
-Privacy URL:  https://waynekingwinner-blip.github.io/JojoT/privacy/
+Support URL:  https://jojot.vercel.app/
+Privacy URL:  https://jojot.vercel.app/privacy/
 ```
 
 ### 代码侧现状

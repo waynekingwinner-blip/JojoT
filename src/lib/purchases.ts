@@ -350,5 +350,5 @@ export async function restore(): Promise<PurchaseResult> {
 export const MANAGE_SUBSCRIPTION_URL = 'https://apps.apple.com/account/subscriptions'
 
 export const TERMS_URL = 'https://www.apple.com/legal/internet-services/itunes/dev/stdeula/'
-export const PRIVACY_URL = 'https://waynekingwinner-blip.github.io/JojoT/privacy/'
-export const SUPPORT_URL = 'https://waynekingwinner-blip.github.io/JojoT/'
+export const PRIVACY_URL = 'https://jojot.vercel.app/privacy/'
+export const SUPPORT_URL = 'https://jojot.vercel.app/'

@@ -102,8 +102,8 @@ JojoT requires a subscription: Weekly $7.99, Monthly $14.99, or Yearly $49.99. P
 
 JojoT is a habit tracker, not medical or fitness advice. It does not diagnose, treat or prevent anything. Talk to a doctor before starting a demanding programme.
 
-Support: https://waynekingwinner-blip.github.io/JojoT/
-Privacy Policy: https://waynekingwinner-blip.github.io/JojoT/privacy/
+Support: https://jojot.vercel.app/
+Privacy Policy: https://jojot.vercel.app/privacy/
 Terms of Use (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 ```
 
@@ -117,9 +117,9 @@ First release.
 
 | 字段 | 值 |
 | --- | --- |
-| Support URL | `https://waynekingwinner-blip.github.io/JojoT/` |
+| Support URL | `https://jojot.vercel.app/` |
 | Marketing URL | *(留空)* |
-| Privacy Policy URL | `https://waynekingwinner-blip.github.io/JojoT/privacy/` |
+| Privacy Policy URL | `https://jojot.vercel.app/privacy/` |
 
 ⚠️ 两个 URL 已用无登录态 curl 实测返回 200。填完自己再验一次。
 
