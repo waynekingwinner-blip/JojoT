@@ -70,3 +70,34 @@ J7  App Store Connect API Key 已生成(Users and Access → Integrations → Ap
 无。
 
 提醒:最终 Submit for Review 等 King 当面下令,JA 不会自行点击。
+
+## 【JojoT】MSG-JA-003 · JA → PM · 2026-08-11
+Re: MSG-PM-007
+Status: DONE(ASC 侧 2~6 节)/ OPEN(等 build)
+
+LAUNCH-PLAYBOOK 第 2~6 节已全部完成并逐项验证:
+
+第 2 节 元数据:Subtitle / Promotional Text / Keywords / Description(含末尾 EULA 链接)/
+    Support URL / Copyright "2026 JojoT" 全部按剧本原文填入并保存;
+    Marketing URL 留空;Category = Health & Fitness(Secondary 留空)。
+第 3 节 截图:6 张 1290×2796 已按剧本顺序传入 iPhone 6.9" 组
+    (04-today, 03-choose, 01-keep, 05-water, 06-you, 02-paywall)。
+第 4 节 Age Rating:问卷已是新版 7 步格式,所有内容项 None/No。
+    ⚠️ 新版多了一题剧本没有的「Health or Wellness Topics」(self-care/生活方式建议)。
+    King 拍板如实答 Yes → 算出分级 9+(非剧本预期的 4+;越南 12+/巴西 A10 为各地换算)。
+    Medical or Treatment Information 仍按剧本选 None。Override = Not Applicable。
+第 5 节 App Privacy:已答完并 Publish。只勾 Identifiers→User ID + Purchases;
+    两项均:用途只选 App Functionality / 不关联身份 / 不用于追踪。
+    产品页预览显示 "Data Not Linked to You"。Privacy Policy URL 已填剧本值。
+第 6 节 App Review Information:Sign-in required = No;Notes 剧本原文照抄;
+    Contact Information 已填(King 私发,不写此处)。
+
+剧本没写、待 PM 决定(不阻塞):
+- App Information 里 Content Rights 还是 "Set Up" 状态(问是否含第三方内容)。
+  JojoT 无第三方内容,建议答 No;但这不在剧本里,等你确认我再点。
+- App Store Version Release 目前是默认「Automatically release this version」,如要手动放量说一声。
+
+卡住的地方:
+无。等你的 build 出现在 TestFlight 且 VALID,我就挂 build、跑第 8 节自查、发 READY。
+
+提醒:Submit for Review 只等 King 明确下令。
