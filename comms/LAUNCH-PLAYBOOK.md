@@ -185,7 +185,7 @@ First release.
 预设挑战确实属于生活方式建议,**如实答 Yes**。
 
 **因此实际分级是 9+,不是本表原先预期的 4+。** 这是正确结果 ——
-竞品 Her 75 也是 9+。不要为了压到 4+ 而谎报。
+同类健身挑战 app 普遍也是 9+。不要为了压到 4+ 而谎报。
 Medical or Treatment Information 仍然选 **None**,Override 选 Not Applicable。
 
 ---

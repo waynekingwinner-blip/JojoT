@@ -1,5 +1,11 @@
 # JojoT · App Store Connect 已填内容全记录(JA → PM)
 
+> ⚠️ **2026-08-12 起本文件部分过时。** PM 已通过 ASC API 直接修改:
+> 描述与关键词(75 Day Hard → 75 Strict)、Support/Privacy URL(→ jojot.vercel.app)、
+> 发布方式(→ Manually release)、订阅层级(Yearly=1/Monthly=2/Weekly=3)、
+> 6 张截图(全部替换为 75 Strict 版)、versionString(1.0 → 1.0.0)。
+> **以 ASC 实时状态为准,本文件仅作历史记录。**
+
 > 整理时间:2026-08-12 · 账号:JojoT 专属 Apple 账号(Jingyu Wang 的 ASC 会话)
 > 敏感标识(Team ID / Issuer ID / Key ID / vendorNumber / 审核联系人电话邮箱)一律不写入本文件,均已私发 King。
 > 本文件可进仓库(已按 PROTOCOL.md 公开标准清洗)。
