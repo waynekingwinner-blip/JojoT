@@ -53,3 +53,16 @@
 - [x] 好友删除策略
 - [ ] reports 表 + RLS
 - [ ] delete_account() 函数(security definer,级联清理)
+
+## 老用户数据迁移(King 2026-08-14 确认的行为)
+
+- 升级不动本地数据:localStorage + 照片全保留,不登录 = 和 1.0 完全一样
+- **登录可选**:只有用好友功能才需要账号,不强迫老用户开户
+- 首次登录跑回填:本地 logs → day_entries(逐天,含历史)、
+  挑战 → participations(started_on 用**原始**开始日期,进度不清零)、
+  名字 → display_name
+- 照片永不上传(卖点 + 政策承诺)
+- 登录后服务器兼作备份:重装 → 再登录 → ensure_profile 靠 Apple sub
+  认回原档案 → 历史从服务器恢复
+- [ ] 开发项:backfill 模块 + 幂等(重复登录不重复写)+ 冲突规则
+      (本地与服务器都有同一天时,以 updated_at 新者为准)
