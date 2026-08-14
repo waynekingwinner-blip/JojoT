@@ -1,0 +1,3 @@
+-- 策略合并(库内版本:v1_1_policy_consolidation)
+-- 每表两条 SELECT 策略合并为一条;函数用 (select fn()) 包裹,
+-- 使其按查询求值一次而非按行求值。详见 migration 历史。
