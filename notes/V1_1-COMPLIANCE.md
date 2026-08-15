@@ -41,6 +41,15 @@
       v1.1 有好友可见的用户文字 → 如实改答,分级可能变化
 - [ ] 支持页 FAQ 增补:如何删账号、如何举报/移除好友
 
+## v1.1 打包/提审前的账号侧动作(浏览器,King 或账号机)
+
+- [ ] **Developer Portal → Identifiers → com.jojot.app → 勾上 Sign In with Apple**
+      (1.0 注册时只勾了 In-App Purchase。不勾的话 v1.1 打包签名会失败 ——
+      entitlements 文件已在工程里,就差 App ID 这个开关)
+- [ ] v1.1 新截图:含 Friends 页(1290×2796),旧 6 张里挑几张换
+- [ ] 商店描述加回好友卖点(这次是真的了):"See your friends' lists in real time"
+- [ ] 隐私政策 **当天部署**:cd docs && vercel deploy --prod --yes,curl 验 200
+
 ## 提审时
 
 - [ ] 审核备注更新:说明社交为好友双向确认制、无公开内容、
