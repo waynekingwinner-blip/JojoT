@@ -19,6 +19,7 @@ import { useApp } from '../lib/store'
 import { BOARDS, BOOKS } from '../lib/data'
 import { getPlan, purchaseMode, MANAGE_SUBSCRIPTION_URL, PRIVACY_URL, SUPPORT_URL } from '../lib/purchases'
 import { openUrl } from '../lib/openUrl'
+import { supabase } from '../lib/backend'
 import { MoodTile, Sheet, SoundButton, Tappable, Toast, Toggle } from '../components/ui'
 import { isSoundEnabled, setSoundEnabled, playSound } from '../lib/sound'
 import { haptic } from '../lib/haptics'
@@ -33,11 +34,13 @@ export default function Profile() {
     resetAll,
     cancelSubscription,
     setReminders,
+    profileId,
+    signOutSocial,
   } = useApp()
 
   const [soundOn, setSoundOn] = useState(isSoundEnabled())
   const [board, setBoard] = useState(BOARDS[0].id)
-  const [confirm, setConfirm] = useState<null | 'cancel' | 'reset' | 'switch'>(null)
+  const [confirm, setConfirm] = useState<null | 'cancel' | 'reset' | 'switch' | 'delete-account'>(null)
   const [toast, setToast] = useState<string | null>(null)
 
   const say = (m: string) => {
@@ -262,6 +265,38 @@ export default function Profile() {
           </Tappable>
         </div>
 
+        {/* account — only exists once signed in (5.1.1v: in-app deletion) */}
+        {profileId && (
+          <>
+            <h2 style={{ fontSize: 17, fontWeight: 600, margin: '26px 2px 10px' }}>Account</h2>
+            <div className="card" style={{ padding: '4px 16px' }}>
+              <Tappable
+                sound="tap"
+                onClick={async () => {
+                  await signOutSocial()
+                  say('Signed out. Your data stays on this device.')
+                }}
+                style={{ cursor: 'pointer' }}
+              >
+                <SettingRow
+                  icon={<Repeat size={18} />}
+                  title="Sign out"
+                  sub="Friends pause; everything local stays"
+                  control={<ChevronRight size={17} className="faint" />}
+                />
+              </Tappable>
+              <Tappable sound="tap" onClick={() => setConfirm('delete-account')} style={{ cursor: 'pointer' }}>
+                <SettingRow
+                  icon={<RefreshCw size={18} />}
+                  title="Delete account"
+                  sub="Erases your account and synced data, immediately"
+                  control={<ChevronRight size={17} className="faint" />}
+                />
+              </Tappable>
+            </div>
+          </>
+        )}
+
         {/* actions */}
         <div className="stack" style={{ marginTop: 18, paddingBottom: 8 }}>
           <SoundButton
@@ -294,14 +329,18 @@ export default function Profile() {
             ? 'Cancel subscription?'
             : confirm === 'switch'
               ? 'Switch challenge?'
-              : 'Reset everything?'}
+              : confirm === 'delete-account'
+                ? 'Delete your account?'
+                : 'Reset everything?'}
         </h3>
         <p className="muted" style={{ fontSize: 13.5, textAlign: 'center', margin: '10px 0 20px', lineHeight: 1.45 }}>
           {confirm === 'cancel'
             ? 'You will lose access to JojoT and land back on the subscribe screen.'
             : confirm === 'switch'
               ? 'Your current challenge and its daily logs will be cleared so you can start fresh.'
-              : 'This wipes your name, challenge, logs and subscription from this device.'}
+              : confirm === 'delete-account'
+                ? 'Your account, friendships and everything synced to our server are erased immediately. Data on this device stays. This cannot be undone.'
+                : 'This wipes your name, challenge, logs and subscription from this device.'}
         </p>
         <div className="stack" style={{ paddingBottom: 8 }}>
           <SoundButton
@@ -311,11 +350,18 @@ export default function Profile() {
             onClick={() => {
               if (confirm === 'cancel') cancelSubscription()
               else if (confirm === 'switch') leaveChallenge()
+              else if (confirm === 'delete-account') {
+                void supabase()?.rpc('delete_account').then(async ({ error }) => {
+                  if (error) return say('Could not delete your account. Email us and we will do it.')
+                  await signOutSocial()
+                  say('Account deleted.')
+                })
+              }
               else resetAll()
               setConfirm(null)
             }}
           >
-            {confirm === 'cancel' ? 'Cancel subscription' : confirm === 'switch' ? 'Switch' : 'Reset'}
+            {confirm === 'cancel' ? 'Cancel subscription' : confirm === 'switch' ? 'Switch' : confirm === 'delete-account' ? 'Delete forever' : 'Reset'}
           </SoundButton>
           <SoundButton className="ghost block" sound="tap" onClick={() => setConfirm(null)}>
             Keep as is

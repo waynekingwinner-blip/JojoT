@@ -12,20 +12,20 @@
 
 ## 必须新建的功能
 
-- [ ] **App 内删除账号**(5.1.1v,强制)
+- [x] **App 内删除账号**(5.1.1v,强制)—— You → Account → Delete account,delete_account() 级联清 + 删 auth 用户,权限已实测
       设置 → Delete account:删 profile(级联清 participations/day_entries/
       friendships/auth_links)+ supabase.auth 注销 + 本地状态清空。
       不许做成"发邮件申请"。
-- [ ] **移除好友** UI(数据库策略已支持 delete,差界面)
-- [ ] **举报好友**:落 reports 表 + 通知 jojotfitness@gmail.com,
+- [x] **移除好友** UI —— 好友卡片 → Manage → Remove friend
+- [x] **举报好友**:reports 表已建,举报即自动断开好友;
       承诺 24h 内处理(1.2 的"及时移除"义务)
-- [ ] **文字过滤**:好友可见文本(display_name / 自定义任务名 / 自建挑战名)
+- [x] **文字过滤**:contentFilter.ts,出口全覆盖(display_name / 任务文本 / 挑战名)
       过基础脏词表,提交侧拦截
-- [ ] 登录:仅 Sign in with Apple(不加第三方登录,避开 4.8 的连带要求)
+- [x] 登录:仅 Sign in with Apple,登录可选,nonce 流程已实现
 
 ## 必须修改的 1.0 文案(否则全是 2.3.1)
 
-- [ ] **隐私政策重写**(docs/privacy/):
+- [x] **隐私政策已重写**(仓库中;⚠️ **v1.1 提审当天才执行 vercel deploy** —— 线上必须继续如实描述 1.0):
       现在写"no accounts, no server, never uploaded" —— v1.1 后不成立。
       要如实写:账号(Apple 登录)、上传的数据(名字/清单勾选/水/步数)、
       好友可见范围、删除方式。
@@ -51,8 +51,8 @@
 
 - [x] RLS:分享开关是数据库强制,不是 UI 隐藏
 - [x] 好友删除策略
-- [ ] reports 表 + RLS
-- [ ] delete_account() 函数(security definer,级联清理)
+- [x] reports 表 + RLS
+- [x] delete_account() 函数(含 auth.users 删除,权限实测通过)
 
 ## 老用户数据迁移(King 2026-08-14 确认的行为)
 

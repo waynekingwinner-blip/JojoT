@@ -14,6 +14,7 @@ import Paywall from './screens/Paywall'
 import ChallengeSelect from './screens/ChallengeSelect'
 import Today from './screens/Today'
 import Hydrate from './screens/Hydrate'
+import Friends from './screens/Friends'
 import Profile from './screens/Profile'
 import { primeAudio } from './lib/sound'
 import { resyncQuietly } from './lib/reminders'
@@ -72,6 +73,7 @@ export default function App() {
               <motion.div key={tab} {...slide} className="screen">
                 {tab === 'today' && <Today goHydrate={() => setTab('hydrate')} />}
                 {tab === 'hydrate' && <Hydrate />}
+                {tab === 'friends' && <Friends />}
                 {tab === 'profile' && <Profile />}
               </motion.div>
               <TabBar active={tab} onChange={setTab} />

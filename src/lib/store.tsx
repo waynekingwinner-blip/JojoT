@@ -7,10 +7,13 @@ import type { ReactNode } from 'react'
 import { CHALLENGES, type Challenge, type Task, type TaskKind } from './data'
 import { checkEntitlement, clearReceipt, purchaseMode, type Entitlement } from './purchases'
 import { deletePhoto } from './photos'
+import { backendAvailable } from './backend'
+import { cachedProfileId, restoreSession, signInWithApple, signOut } from './auth'
+import { backfill, ensureParticipation, pushDay } from './sync'
 
 const KEY = 'jojot:state:v1'
 
-export type Tab = 'today' | 'hydrate' | 'profile'
+export type Tab = 'today' | 'hydrate' | 'friends' | 'profile'
 
 type DayLog = {
   /** completed task ids */
@@ -117,6 +120,12 @@ type Ctx = {
   resetTasks: () => void
   createChallenge: (input: { name: string; days: number; tasks: string[] }) => string
 
+  /** null = 未登录。好友功能的开关。 */
+  profileId: string | null
+  socialAvailable: boolean
+  signIn: () => Promise<'ok' | 'cancelled' | 'failed'>
+  signOutSocial: () => Promise<void>
+
   setEntitlement: (e: Entitlement | null) => void
   cancelSubscription: () => void
   setReminders: (on: boolean) => void
@@ -130,6 +139,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<Persisted>(load)
   const [viewDayRaw, setViewDayRaw] = useState<number | null>(null)
   const [premiumChecked, setPremiumChecked] = useState(false)
+  const [profileId, setProfileId] = useState<string | null>(cachedProfileId())
+
+  // 恢复已有登录会话(无会话则安静返回,绝不弹任何框)
+  useEffect(() => {
+    if (!backendAvailable()) return
+    void restoreSession().then((pid) => setProfileId(pid))
+  }, [])
 
   useEffect(() => {
     try {
@@ -195,6 +211,17 @@ export function AppProvider({ children }: { children: ReactNode }) {
       return { ...s, logs: { ...s.logs, [viewDay]: { ...prev, done: [...prev.done, waterTask.id] } } }
     })
   }, [challenge, log.water, log.done, waterGoalMl, viewDay])
+
+  // 登录后,当天数据每次变化都镜像到服务器(防抖 1.5s,离线失败无感)
+  useEffect(() => {
+    if (!profileId || !challenge || !state.startedISO) return
+    const t = setTimeout(() => {
+      void ensureParticipation(challenge, state.startedISO!).then((pid) => {
+        if (pid) void pushDay(pid, viewDay, challenge.tasks, log)
+      })
+    }, 1500)
+    return () => clearTimeout(t)
+  }, [profileId, challenge, state.startedISO, viewDay, log])
 
   /** Patch the log for the day currently being viewed. */
   const patchLog = useCallback(
@@ -311,6 +338,25 @@ export function AppProvider({ children }: { children: ReactNode }) {
       }
       setState((s) => ({ ...s, customChallenges: [created, ...s.customChallenges] }))
       return id
+    },
+
+    profileId,
+    socialAvailable: backendAvailable(),
+
+    signIn: async () => {
+      const res = await signInWithApple(state.name)
+      if (!res.ok) return res.reason === 'cancelled' ? 'cancelled' : 'failed'
+      setProfileId(res.profileId)
+      // 老用户历史整体回填(只填空缺,幂等)
+      if (challenge && state.startedISO) {
+        void backfill(challenge, state.startedISO, state.logs, challenge.tasks)
+      }
+      return 'ok'
+    },
+
+    signOutSocial: async () => {
+      await signOut()
+      setProfileId(null)
     },
 
     setEntitlement: (e) => setState((s) => ({ ...s, entitlement: e })),

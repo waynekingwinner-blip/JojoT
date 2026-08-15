@@ -218,7 +218,7 @@ await check('share card downloads with the day on it', async () => {
 
 console.log('\n— you —')
 await check('profile shows the active subscription', async () => {
-  await page.locator('.tab').nth(2).click()
+  await page.locator('.tab').nth(3).click()
   await wait(800)
   await page.getByText('JojoT Premium · Weekly').waitFor({ timeout: 3000 })
   await page.getByText('Active', { exact: true }).waitFor({ timeout: 3000 })

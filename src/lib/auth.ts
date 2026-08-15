@@ -18,6 +18,7 @@
 import { Capacitor } from '@capacitor/core'
 import { SignInWithApple } from '@capacitor-community/apple-sign-in'
 import { supabase, backendAvailable } from './backend'
+import { cleanShared } from './contentFilter'
 
 export type SignInResult =
   | { ok: true; profileId: string }
@@ -97,7 +98,7 @@ export async function signInWithApple(displayName: string): Promise<SignInResult
   const { data, error: rpcError } = await sb.rpc('ensure_profile', {
     p_provider: 'apple',
     p_subject: sub,
-    p_name: displayName || null,
+    p_name: displayName ? cleanShared(displayName) : null,
   })
   if (rpcError || !data) return { ok: false, reason: 'failed' }
 

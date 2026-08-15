@@ -14,6 +14,7 @@
 import { supabase } from './backend'
 import { cachedProfileId } from './auth'
 import type { Challenge, Task } from './data'
+import { cleanShared } from './contentFilter'
 
 type DayLogLike = { done: string[]; water: number; steps: number }
 
@@ -22,7 +23,7 @@ export type ServerTask = { id: string; text: string; done: boolean; done_at: str
 function toServerTasks(tasks: Task[], log: DayLogLike, doneAt?: string): ServerTask[] {
   return tasks.map((t) => ({
     id: t.id,
-    text: t.text,
+    text: cleanShared(t.text),
     done: log.done.includes(t.id),
     done_at: log.done.includes(t.id) ? (doneAt ?? new Date().toISOString()) : null,
   }))
@@ -55,7 +56,7 @@ export async function ensureParticipation(
     .insert({
       profile_id: me,
       challenge_key: challenge.id,
-      challenge_name: challenge.short,
+      challenge_name: cleanShared(challenge.short),
       total_days: challenge.days,
       started_on: startedISO, // original start date — streak arrives intact
     })
@@ -197,6 +198,52 @@ export async function fetchFriendsToday(): Promise<FriendToday[]> {
     dayNo: latestByProfile.get(p.id)?.day_no ?? null,
     tasks: latestByProfile.get(p.id)?.tasks ?? [],
   }))
+}
+
+export type PendingRequest = { friendship_id: string; requester_name: string; requested_at: string }
+
+export async function pendingRequests(): Promise<PendingRequest[]> {
+  const sb = supabase()
+  if (!sb) return []
+  const { data } = await sb.rpc('pending_requests')
+  return (data as PendingRequest[]) ?? []
+}
+
+export async function acceptRequest(friendshipId: string): Promise<boolean> {
+  const sb = supabase()
+  if (!sb) return false
+  const { error } = await sb
+    .from('friendships')
+    .update({ status: 'accepted', responded_at: new Date().toISOString() })
+    .eq('id', friendshipId)
+  return !error
+}
+
+/** Sever the edge in either direction. RLS limits it to edges I'm on. */
+export async function removeFriend(profileId: string): Promise<boolean> {
+  const sb = supabase()
+  const me = cachedProfileId()
+  if (!sb || !me) return false
+  const { error } = await sb
+    .from('friendships')
+    .delete()
+    .or(`and(requester.eq.${me},addressee.eq.${profileId}),and(requester.eq.${profileId},addressee.eq.${me})`)
+  return !error
+}
+
+/** File a report (lands in the reports table + support inbox) and cut the tie. */
+export async function reportFriend(profileId: string, reason: string): Promise<boolean> {
+  const sb = supabase()
+  const me = cachedProfileId()
+  if (!sb || !me) return false
+  const { error } = await sb.from('reports').insert({
+    reporter: me,
+    reported: profileId,
+    reason: reason.slice(0, 500),
+  })
+  if (error) return false
+  await removeFriend(profileId) // reporting implies you no longer want to see them
+  return true
 }
 
 /** Live updates: friend ticks a task → callback fires. Returns unsubscribe. */

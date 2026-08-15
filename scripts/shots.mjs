@@ -99,7 +99,7 @@ await page.waitForTimeout(1400)
 await page.screenshot({ path: 'shots/05-water.png' })
 
 // 7) You
-await tabs.nth(2).click()
+await tabs.nth(3).click()
 await page.waitForTimeout(1400)
 await page.screenshot({ path: 'shots/07-profile.png' })
 
