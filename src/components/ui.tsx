@@ -207,8 +207,9 @@ export function MoodTile({
           style={{
             position: 'absolute',
             left: '50%',
-            bottom: 0,
-            height: '92%',
+            bottom: '4%',
+            maxHeight: '90%',
+            maxWidth: '86%',
             transform: 'translateX(-50%)',
             filter: lum < 140 ? 'invert(1)' : 'none',
             opacity: 0.92,

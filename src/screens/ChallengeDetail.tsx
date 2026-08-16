@@ -8,22 +8,35 @@ import { ArrowLeft } from 'lucide-react'
 import { useApp } from '../lib/store'
 import { NOTE_COLORS } from '../lib/data'
 import { SoundButton, IconButton, MoodStrip, CheckCircle } from '../components/ui'
-import figDay30 from '../assets/figure-day30.png'
-import figDay75 from '../assets/figure-day75.png'
-import figMale from '../assets/figure-m.png'
+/* Themed pose layouts — only cells that survived slicing cleanly.
+   Six poses (plank/hike/tree/reading/tea/bath) were dropped: the
+   source sheet's rows drift, and their crops kept neighbours' feet. */
+import p06 from '../assets/lib/p06.png' // dumbbells
+import p07 from '../assets/lib/p07.png' // squat
+import p13 from '../assets/lib/p13.png' // sprint
+import p01 from '../assets/lib/p01.png' // warrior
+import p32 from '../assets/lib/p32.png' // high knees
+import p02 from '../assets/lib/p02.png' // striding
+import p03 from '../assets/lib/p03.png' // side stretch
+import p30 from '../assets/lib/p30.png' // dog walk
+import p28 from '../assets/lib/p28.png' // neck stretch
+import p26 from '../assets/lib/p26.png' // journaling
+import p31 from '../assets/lib/p31.png' // stairs
+import p15 from '../assets/lib/p15.png' // fruit bowl
+import p16 from '../assets/lib/p16.png' // salad
+import p19 from '../assets/lib/p19.png' // water bottle
+import p29 from '../assets/lib/p29.png' // meditation
+import p20 from '../assets/lib/p20.png' // child's pose
+import p27 from '../assets/lib/p27.png' // prayer hands
 
-/* Interim per-challenge figure layouts from the four existing assets —
-   swapped for themed action poses when the next art batch lands.
-   Day-1 (slouched) deliberately unused here: wrong energy for a card
-   selling a challenge. */
 const CARD_FIGURES: Record<string, (string | undefined)[]> = {
-  hard:      [undefined, figMale, undefined, figDay75],
-  medium:    [undefined, figDay30, undefined, undefined],
-  soft:      [figDay75, undefined, undefined, undefined],
-  glow:      [undefined, undefined, figDay30, undefined],
-  better:    [undefined, figDay75, undefined, undefined],
-  sugarfree: [undefined, undefined, undefined, figDay30],
-  mental:    [undefined, figDay75, undefined, undefined],
+  hard:      [p06, p13, p07, undefined],
+  medium:    [p01, undefined, p32, p02],
+  soft:      [p03, p30, undefined, p28],
+  glow:      [p28, p19, undefined, p03],
+  better:    [p26, undefined, p31, undefined],
+  sugarfree: [p15, undefined, p16, p19],
+  mental:    [p29, p20, undefined, p27],
 }
 
 
