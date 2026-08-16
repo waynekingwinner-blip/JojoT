@@ -8,6 +8,24 @@ import { ArrowLeft } from 'lucide-react'
 import { useApp } from '../lib/store'
 import { NOTE_COLORS } from '../lib/data'
 import { SoundButton, IconButton, MoodStrip, CheckCircle } from '../components/ui'
+import figDay30 from '../assets/figure-day30.png'
+import figDay75 from '../assets/figure-day75.png'
+import figMale from '../assets/figure-m.png'
+
+/* Interim per-challenge figure layouts from the four existing assets —
+   swapped for themed action poses when the next art batch lands.
+   Day-1 (slouched) deliberately unused here: wrong energy for a card
+   selling a challenge. */
+const CARD_FIGURES: Record<string, (string | undefined)[]> = {
+  hard:      [undefined, figMale, undefined, figDay75],
+  medium:    [undefined, figDay30, undefined, undefined],
+  soft:      [figDay75, undefined, undefined, undefined],
+  glow:      [undefined, undefined, figDay30, undefined],
+  better:    [undefined, figDay75, undefined, undefined],
+  sugarfree: [undefined, undefined, undefined, figDay30],
+  mental:    [undefined, figDay75, undefined, undefined],
+}
+
 
 export default function ChallengeDetail({
   challengeId,
@@ -45,7 +63,7 @@ export default function ChallengeDetail({
         </div>
 
         <div style={{ marginTop: 22 }}>
-          <MoodStrip tones={c.tones} />
+          <MoodStrip tones={c.tones} figures={CARD_FIGURES[c.id]} />
         </div>
 
         {/* rules card */}

@@ -8,6 +8,24 @@ import { motion } from 'framer-motion'
 import { ChevronRight, Plus } from 'lucide-react'
 import { useApp } from '../lib/store'
 import { Tappable, MoodStrip } from '../components/ui'
+import figDay30 from '../assets/figure-day30.png'
+import figDay75 from '../assets/figure-day75.png'
+import figMale from '../assets/figure-m.png'
+
+/* Interim per-challenge figure layouts from the four existing assets —
+   swapped for themed action poses when the next art batch lands.
+   Day-1 (slouched) deliberately unused here: wrong energy for a card
+   selling a challenge. */
+const CARD_FIGURES: Record<string, (string | undefined)[]> = {
+  hard:      [undefined, figMale, undefined, figDay75],
+  medium:    [undefined, figDay30, undefined, undefined],
+  soft:      [figDay75, undefined, undefined, undefined],
+  glow:      [undefined, undefined, figDay30, undefined],
+  better:    [undefined, figDay75, undefined, undefined],
+  sugarfree: [undefined, undefined, undefined, figDay30],
+  mental:    [undefined, figDay75, undefined, undefined],
+}
+
 import ChallengeDetail from './ChallengeDetail'
 import CreateChallenge from './CreateChallenge'
 
@@ -67,7 +85,7 @@ export default function ChallengeSelect() {
                   </div>
                   <ChevronRight size={22} className="faint" style={{ marginBottom: 4 }} />
                 </div>
-                <MoodStrip tones={c.tones} />
+                <MoodStrip tones={c.tones} figures={CARD_FIGURES[c.id]} />
               </Tappable>
             </motion.div>
           ))}

@@ -221,11 +221,19 @@ export function MoodTile({
 }
 
 /** 4-up mood board used on challenge cards. */
-export function MoodStrip({ tones, radius = 10 }: { tones: string[]; radius?: number }) {
+export function MoodStrip({
+  tones,
+  radius = 10,
+  figures,
+}: {
+  tones: string[]
+  radius?: number
+  figures?: (string | undefined)[]
+}) {
   return (
     <div className="strip" style={{ borderRadius: radius }}>
       {tones.slice(0, 4).map((t, i) => (
-        <MoodTile key={i} tone={t} seed={i + 1} />
+        <MoodTile key={i} tone={t} seed={i + 1} figure={figures?.[i]} />
       ))}
     </div>
   )
