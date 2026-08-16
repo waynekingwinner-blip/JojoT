@@ -8,6 +8,18 @@ import { ArrowLeft } from 'lucide-react'
 import { SoundButton, MoodTile, IconButton } from '../components/ui'
 import { useApp } from '../lib/store'
 import { playSound } from '../lib/sound'
+import figDay1 from '../assets/figure-day1.png'
+import figDay30 from '../assets/figure-day30.png'
+import figDay75 from '../assets/figure-day75.png'
+
+/* Per-slide, per-tile figure layout — the onboarding is HER journey,
+   told alone (a slouched Day-1 figure next to anyone else reads
+   wrong; King's call). Slide 3 shows the whole arc in sequence. */
+const SLIDE_FIGURES: (string | undefined)[][] = [
+  [undefined, figDay1, undefined, undefined],
+  [undefined, figDay30, undefined, figDay75],
+  [figDay1, figDay30, figDay75, undefined],
+]
 
 type Slide = { title: string; em: string; body: string; tones: string[] }
 
@@ -82,7 +94,7 @@ export default function Onboarding() {
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: k * 0.06 }}
                   >
-                    <MoodTile tone={t} seed={i * 4 + k} />
+                    <MoodTile tone={t} seed={i * 4 + k} figure={SLIDE_FIGURES[i][k]} />
                   </motion.div>
                 ))}
               </div>

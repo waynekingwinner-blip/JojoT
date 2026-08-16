@@ -170,29 +170,53 @@ export function MoodTile({
   tone,
   seed = 0,
   radius = 0,
+  figure,
   style,
 }: {
   tone: string
   seed?: number
   radius?: number
+  /** silhouette image drawn over the gradient; auto-inverts on dark tones */
+  figure?: string
   style?: CSSProperties
 }) {
   const angle = 120 + ((seed * 47) % 90)
   const light = mix(tone, '#ffffff', 0.4)
   const dark = mix(tone, '#2a2a2a', 0.22)
+  // luminance decides black figure (light tile) vs white figure (dark tile)
+  const lum = /^#/.test(tone) ? parseInt(tone.slice(1, 3), 16) : 255
   return (
     <div
       aria-hidden
       style={{
+        position: 'relative',
         width: '100%',
         height: '100%',
         borderRadius: radius,
+        overflow: 'hidden',
         background: `
           radial-gradient(60% 45% at ${20 + ((seed * 23) % 60)}% ${15 + ((seed * 31) % 50)}%, ${light} 0%, transparent 70%),
           linear-gradient(${angle}deg, ${dark} 0%, ${tone} 48%, ${light} 100%)`,
         ...style,
       }}
-    />
+    >
+      {figure && (
+        <img
+          src={figure}
+          alt=""
+          style={{
+            position: 'absolute',
+            left: '50%',
+            bottom: 0,
+            height: '92%',
+            transform: 'translateX(-50%)',
+            filter: lum < 140 ? 'invert(1)' : 'none',
+            opacity: 0.92,
+            objectFit: 'contain',
+          }}
+        />
+      )}
+    </div>
   )
 }
 

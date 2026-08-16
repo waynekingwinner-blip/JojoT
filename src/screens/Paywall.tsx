@@ -33,6 +33,12 @@ import {
 import { playSound } from '../lib/sound'
 import { haptic } from '../lib/haptics'
 import { linkHandler } from '../lib/openUrl'
+import figDay75 from '../assets/figure-day75.png'
+import figMale from '../assets/figure-m.png'
+
+import figDay30 from '../assets/figure-day30.png'
+
+const HERO_FIGURES: (string | undefined)[] = [figDay30, figDay75, figMale, undefined]
 
 const PERKS = [
   'Every challenge — 75 Strict, Medium, Soft & more',
@@ -130,7 +136,7 @@ export default function Paywall() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.05 * i, duration: 0.4 }}
             >
-              <MoodTile tone={t} seed={i + 3} />
+              <MoodTile tone={t} seed={i + 3} figure={HERO_FIGURES[i]} />
             </motion.div>
           ))}
         </div>
