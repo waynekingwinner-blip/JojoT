@@ -12,6 +12,9 @@ interface ImportMetaEnv {
    * app away — see purchaseMode() in src/lib/purchases.ts.
    */
   readonly VITE_REVENUECAT_IOS_KEY?: string
+  /** '1' on TestFlight builds only — unlocks the paywall when the
+      store has no products yet (pre-1.0-approval deadlock). */
+  readonly VITE_BETA_UNLOCK?: string
 }
 
 interface ImportMeta {

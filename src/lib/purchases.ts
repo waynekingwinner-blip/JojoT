@@ -33,6 +33,20 @@ export const ENTITLEMENT_ID = 'premium'
 
 const API_KEY = (import.meta.env.VITE_REVENUECAT_IOS_KEY as string | undefined)?.trim() || ''
 
+/** TestFlight-only escape hatch. Before 1.0 is approved, the
+    subscription products don't exist as far as the store is
+    concerned, so a hard paywall deadlocks every beta tester.
+    Set VITE_BETA_UNLOCK=1 ONLY for TestFlight builds; the App
+    Store submission build must not carry it. */
+export const BETA_UNLOCK = (import.meta.env.VITE_BETA_UNLOCK as string | undefined) === '1'
+
+export function betaEntitlement(): Entitlement {
+  const today = new Date().toISOString().slice(0, 10)
+  const d = new Date(); d.setDate(d.getDate() + 30)
+  return { planId: 'monthly', productId: 'beta.unlock',
+           purchasedISO: today, renewsISO: d.toISOString().slice(0, 10) }
+}
+
 export type PlanId = 'weekly' | 'monthly' | 'yearly'
 
 export type Plan = {

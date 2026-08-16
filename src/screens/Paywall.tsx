@@ -16,6 +16,8 @@ import { Check, Loader2 } from 'lucide-react'
 import { SoundButton, MoodTile, Toast } from '../components/ui'
 import { useApp } from '../lib/store'
 import {
+  BETA_UNLOCK,
+  betaEntitlement,
   PLANS,
   DEFAULT_PLAN,
   getPlan,
@@ -210,13 +212,22 @@ export default function Paywall() {
         <SoundButton
           className="block xl"
           sound="pop"
-          disabled={busy != null || unavailable || loadingPlans}
-          onClick={subscribe}
+          disabled={busy != null || loadingPlans || (unavailable && !BETA_UNLOCK)}
+          onClick={() => {
+            if (unavailable && BETA_UNLOCK) {
+              playSound('success')
+              setEntitlement(betaEntitlement())
+              return
+            }
+            void subscribe()
+          }}
         >
           {loadingPlans ? (
             'Loading…'
-          ) : unavailable ? (
+          ) : unavailable && !BETA_UNLOCK ? (
             'Subscriptions unavailable'
+          ) : unavailable && BETA_UNLOCK ? (
+            'Continue (beta test)'
           ) : busy === 'buy' ? (
             <motion.span
               animate={{ rotate: 360 }}
