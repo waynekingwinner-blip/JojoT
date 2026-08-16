@@ -11,14 +11,20 @@ import { playSound } from '../lib/sound'
 import figDay1 from '../assets/figure-day1.png'
 import figDay30 from '../assets/figure-day30.png'
 import figDay75 from '../assets/figure-day75.png'
+import pJournal from '../assets/lib/p26.png'
+import pWater from '../assets/lib/p19.png'
+import pDog from '../assets/lib/p30.png'
+import pWeights from '../assets/lib/p06.png'
+import pSalad from '../assets/lib/p16.png'
+import pSummit from '../assets/lib/p34.png'
 
 /* Per-slide, per-tile figure layout — the onboarding is HER journey,
    told alone (a slouched Day-1 figure next to anyone else reads
    wrong; King's call). Slide 3 shows the whole arc in sequence. */
 const SLIDE_FIGURES: (string | undefined)[][] = [
-  [undefined, figDay1, undefined, undefined],
-  [undefined, figDay30, undefined, figDay75],
-  [figDay1, figDay30, figDay75, undefined],
+  [pJournal, figDay1, pWater, pDog],
+  [pWeights, figDay30, pSalad, figDay75],
+  [figDay1, figDay30, figDay75, pSummit],
 ]
 
 type Slide = { title: string; em: string; body: string; tones: string[] }

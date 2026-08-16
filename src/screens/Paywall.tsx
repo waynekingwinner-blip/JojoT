@@ -37,8 +37,9 @@ import figDay75 from '../assets/figure-day75.png'
 import figMale from '../assets/figure-m.png'
 
 import figDay30 from '../assets/figure-day30.png'
+import pDancer from '../assets/lib/p33.png'
 
-const HERO_FIGURES: (string | undefined)[] = [figDay30, figDay75, figMale, undefined]
+const HERO_FIGURES: (string | undefined)[] = [figDay30, figDay75, figMale, pDancer]
 
 const PERKS = [
   'Every challenge — 75 Strict, Medium, Soft & more',
