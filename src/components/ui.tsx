@@ -5,6 +5,7 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import type { CSSProperties, ReactNode } from 'react'
 import { Check } from 'lucide-react'
+import { Capacitor } from '@capacitor/core'
 import { playSound, primeAudio } from '../lib/sound'
 import { haptic } from '../lib/haptics'
 
@@ -360,8 +361,14 @@ export function Toast({ message }: { message: string | null }) {
   )
 }
 
-/* ---- Faux iOS status bar for the phone frame ---- */
+/* ---- Faux iOS status bar for the phone frame ----
+   Web preview only: on device the real status bar sits in the safe
+   area, so drawing a second clock reads as a bug (a tester caught
+   the doubled "9:41"). Natively this is just the safe-area spacer. */
 export function StatusBar() {
+  if (Capacitor.isNativePlatform()) {
+    return <div style={{ height: 'calc(var(--safe-top) + 8px)' }} aria-hidden />
+  }
   return (
     <div className="statusbar">
       <span>9:41</span>
