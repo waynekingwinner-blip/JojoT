@@ -152,6 +152,26 @@ function FriendsList({ say, toast }: { say: (m: string) => void; toast: string |
           </button>
         </div>
 
+        {/* 我的邀请码 — first thing on the screen; a tester hunted for
+            it at the bottom of the list and gave up before finding it */}
+        {code && (
+          <div className="card flat" style={{ padding: 16, marginBottom: 14, textAlign: 'center' }}>
+            <div className="eyebrow" style={{ marginBottom: 6 }}>Your invite code</div>
+            <div className="display" style={{ fontSize: 28, letterSpacing: 4 }}>{code}</div>
+            <button
+              className="link-btn"
+              style={{ marginTop: 8 }}
+              onClick={() => {
+                void navigator.clipboard?.writeText(code)
+                playSound('pop')
+                say('Code copied')
+              }}
+            >
+              <Copy size={13} style={{ verticalAlign: -2, marginRight: 4 }} />Copy
+            </button>
+          </div>
+        )}
+
         {/* 待接受 */}
         {pending.map((p) => (
           <div key={p.friendship_id} className="card flat row between" style={{ padding: 14, marginBottom: 10 }}>
@@ -226,24 +246,6 @@ function FriendsList({ say, toast }: { say: (m: string) => void; toast: string |
           </div>
         )}
 
-        {/* 我的邀请码 */}
-        {code && (
-          <div className="card flat" style={{ padding: 16, marginTop: 18, textAlign: 'center' }}>
-            <div className="eyebrow" style={{ marginBottom: 6 }}>Your invite code</div>
-            <div className="display" style={{ fontSize: 28, letterSpacing: 4 }}>{code}</div>
-            <button
-              className="link-btn"
-              style={{ marginTop: 8 }}
-              onClick={() => {
-                void navigator.clipboard?.writeText(code)
-                playSound('pop')
-                say('Code copied')
-              }}
-            >
-              <Copy size={13} style={{ verticalAlign: -2, marginRight: 4 }} />Copy
-            </button>
-          </div>
-        )}
       </div>
 
       {/* 加好友 */}
@@ -265,6 +267,22 @@ function FriendsList({ say, toast }: { say: (m: string) => void; toast: string |
         <SoundButton className="block" sound="pop" disabled={!draft.trim()} onClick={() => void submitCode()} style={{ marginTop: 12 }}>
           <Check size={16} style={{ verticalAlign: -3, marginRight: 6 }} />Send request
         </SoundButton>
+        {code && (
+          <p className="faint" style={{ fontSize: 13, textAlign: 'center', marginTop: 14 }}>
+            Your code: <strong style={{ letterSpacing: 2 }}>{code}</strong>
+            <button
+              className="link-btn"
+              style={{ marginLeft: 8 }}
+              onClick={() => {
+                void navigator.clipboard?.writeText(code)
+                playSound('pop')
+                say('Code copied')
+              }}
+            >
+              <Copy size={12} style={{ verticalAlign: -2, marginRight: 3 }} />Copy
+            </button>
+          </p>
+        )}
       </Sheet>
 
       {/* 管理好友:移除 / 举报(Guideline 1.2)*/}
