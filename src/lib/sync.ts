@@ -148,13 +148,18 @@ export type FriendToday = {
   tasks: ServerTask[]
 }
 
-/** My invite code, to show in the share sheet. */
+/** My invite code, to show in the share sheet. The RPC resolves the
+    profile server-side, so this works even before the local profile
+    cache is warm — it only needs the auth session. */
 export async function myInviteCode(): Promise<string | null> {
   const sb = supabase()
+  if (!sb) return null
+  const { data, error } = await sb.rpc('my_invite_code')
+  if (!error && data) return data as string
   const me = cachedProfileId()
-  if (!sb || !me) return null
-  const { data } = await sb.from('profiles').select('invite_code').eq('id', me).maybeSingle()
-  return data?.invite_code ?? null
+  if (!me) return null
+  const { data: row } = await sb.from('profiles').select('invite_code').eq('id', me).maybeSingle()
+  return row?.invite_code ?? null
 }
 
 export async function addFriendByCode(code: string): Promise<'sent' | 'not-found' | 'failed'> {

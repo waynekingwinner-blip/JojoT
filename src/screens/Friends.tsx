@@ -124,9 +124,23 @@ function FriendsList({ say, toast }: { say: (m: string) => void; toast: string |
 
   useEffect(() => {
     refresh()
-    void myInviteCode().then(setCode)
     setLoaded(true)
-    return subscribeFriendEntries(refresh) // 朋友一勾任务,这里就刷新
+    /* The store hydrates profileId from localStorage synchronously, so
+       this screen can mount before the Supabase session finishes its
+       async restore — the first fetch then runs unauthenticated, RLS
+       returns nothing, and without a retry the code never appears. */
+    let cancelled = false
+    let attempt = 0
+    const tryFetch = () => {
+      void myInviteCode().then((c) => {
+        if (cancelled) return
+        if (c) setCode(c)
+        else if (attempt++ < 6) setTimeout(tryFetch, 1500)
+      })
+    }
+    tryFetch()
+    const unsub = subscribeFriendEntries(refresh) // 朋友一勾任务,这里就刷新
+    return () => { cancelled = true; unsub() }
   }, [refresh])
 
   const submitCode = async () => {
