@@ -158,17 +158,31 @@ function FriendsList({ say, toast }: { say: (m: string) => void; toast: string |
           <div className="card flat" style={{ padding: 16, marginBottom: 14, textAlign: 'center' }}>
             <div className="eyebrow" style={{ marginBottom: 6 }}>Your invite code</div>
             <div className="display" style={{ fontSize: 28, letterSpacing: 4 }}>{code}</div>
-            <button
-              className="link-btn"
-              style={{ marginTop: 8 }}
-              onClick={() => {
-                void navigator.clipboard?.writeText(code)
-                playSound('pop')
-                say('Code copied')
-              }}
-            >
-              <Copy size={13} style={{ verticalAlign: -2, marginRight: 4 }} />Copy
-            </button>
+            <div className="row center gap-3" style={{ marginTop: 8 }}>
+              <button
+                className="link-btn"
+                onClick={() => {
+                  // Friends without the app need the pitch and the store
+                  // link, not a bare eight-character code.
+                  const text = `Join me on JojoT — 75 days, one list a day. Get the app: https://apps.apple.com/app/id6799851593 then add me with code ${code}`
+                  playSound('pop')
+                  if (navigator.share) void navigator.share({ text }).catch(() => undefined)
+                  else { void navigator.clipboard?.writeText(text); say('Invite copied') }
+                }}
+              >
+                <UserPlus size={13} style={{ verticalAlign: -2, marginRight: 4 }} />Invite a friend
+              </button>
+              <button
+                className="link-btn"
+                onClick={() => {
+                  void navigator.clipboard?.writeText(code)
+                  playSound('pop')
+                  say('Code copied')
+                }}
+              >
+                <Copy size={13} style={{ verticalAlign: -2, marginRight: 4 }} />Copy code
+              </button>
+            </div>
           </div>
         )}
 

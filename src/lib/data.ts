@@ -196,12 +196,34 @@ export const NOTE_COLORS = [
 /* Inspiration boards                                                  */
 /* ------------------------------------------------------------------ */
 
-export type InspoBoard = { id: string; title: string; tones: string[] }
+import bFruit from '../assets/lib/p15.png'
+import bSalad from '../assets/lib/p16.png'
+import bJuice from '../assets/lib/p17.png'
+import bAvocado from '../assets/lib/p18.png'
+import bWater from '../assets/lib/p19.png'
+import bTea from '../assets/lib/p23.png'
+import bWeights from '../assets/lib/p06.png'
+import bSprint from '../assets/lib/p13.png'
+import bSquat from '../assets/lib/p07.png'
+import bRope from '../assets/lib/p10.png'
+import bBike from '../assets/lib/p11.png'
+import bPlank from '../assets/lib/p08.png'
+import bReading from '../assets/lib/p22.png'
+import bJournal from '../assets/lib/p26.png'
+import bWindow from '../assets/lib/p25.png'
+import bMeditate from '../assets/lib/p29.png'
+import bSleep from '../assets/lib/p21.png'
+import bChild from '../assets/lib/p20.png'
+
+export type InspoBoard = { id: string; title: string; tones: string[]; figures: string[] }
 
 export const BOARDS: InspoBoard[] = [
-  { id: 'meals', title: 'meals', tones: ['#e4e4e4', '#cfcfcf', '#dadada', '#ebebeb', '#c6c6c6', '#dfdfdf'] },
-  { id: 'workouts', title: 'workouts', tones: ['#bfbfbf', '#d6d6d6', '#a9a9a9', '#e0e0e0', '#cbcbcb', '#b4b4b4'] },
-  { id: 'reads', title: 'reads', tones: ['#dcdcdc', '#eeeeee', '#c9c9c9', '#e6e6e6', '#d2d2d2', '#f2f2f2'] },
+  { id: 'meals', title: 'meals', tones: ['#e4e4e4', '#cfcfcf', '#dadada', '#ebebeb', '#c6c6c6', '#dfdfdf'],
+    figures: [bFruit, bSalad, bJuice, bAvocado, bWater, bTea] },
+  { id: 'workouts', title: 'workouts', tones: ['#bfbfbf', '#d6d6d6', '#a9a9a9', '#e0e0e0', '#cbcbcb', '#b4b4b4'],
+    figures: [bWeights, bSprint, bSquat, bRope, bBike, bPlank] },
+  { id: 'reads', title: 'reads', tones: ['#dcdcdc', '#eeeeee', '#c9c9c9', '#e6e6e6', '#d2d2d2', '#f2f2f2'],
+    figures: [bReading, bJournal, bWindow, bMeditate, bSleep, bChild] },
 ]
 
 export const BOOKS: { title: string; author: string }[] = [

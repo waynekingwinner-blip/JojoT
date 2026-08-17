@@ -186,7 +186,7 @@ export default function Profile() {
               transition={{ delay: i * 0.03 }}
               style={{ aspectRatio: '0.85', borderRadius: 10, overflow: 'hidden' }}
             >
-              <MoodTile tone={t} seed={i + 2} radius={10} />
+              <MoodTile tone={t} seed={i + 2} radius={10} figure={activeBoard.figures[i]} />
             </motion.div>
           ))}
         </div>
