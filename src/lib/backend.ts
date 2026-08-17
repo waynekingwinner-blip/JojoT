@@ -31,6 +31,22 @@ export function supabase(): SupabaseClient | null {
         detectSessionInUrl: false,
       },
     })
+    /* The auto-refresh timer stops ticking while iOS suspends the
+       WebView, so after ~1h in the background the access token is
+       expired and every query fails RLS ("worked right after update,
+       dead an hour later"). Restart the timer and refresh eagerly
+       whenever the app comes back to the foreground. */
+    if (typeof document !== 'undefined') {
+      document.addEventListener('visibilitychange', () => {
+        if (!client) return
+        if (document.visibilityState === 'visible') {
+          client.auth.startAutoRefresh()
+          void client.auth.getSession()
+        } else {
+          client.auth.stopAutoRefresh()
+        }
+      })
+    }
   }
   return client
 }

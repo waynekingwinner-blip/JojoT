@@ -139,8 +139,21 @@ function FriendsList({ say, toast }: { say: (m: string) => void; toast: string |
       })
     }
     tryFetch()
+    /* Coming back from the background: the session may have just been
+       refreshed (see backend.ts) — refetch everything this screen shows. */
+    const onWake = () => {
+      if (document.visibilityState !== 'visible') return
+      attempt = 0
+      refresh()
+      tryFetch()
+    }
+    document.addEventListener('visibilitychange', onWake)
     const unsub = subscribeFriendEntries(refresh) // 朋友一勾任务,这里就刷新
-    return () => { cancelled = true; unsub() }
+    return () => {
+      cancelled = true
+      document.removeEventListener('visibilitychange', onWake)
+      unsub()
+    }
   }, [refresh])
 
   const submitCode = async () => {
@@ -167,7 +180,26 @@ function FriendsList({ say, toast }: { say: (m: string) => void; toast: string |
         </div>
 
         {/* 我的邀请码 — first thing on the screen; a tester hunted for
-            it at the bottom of the list and gave up before finding it */}
+            it at the bottom of the list and gave up before finding it.
+            Never render nothing: a silently missing card is what made
+            the invite flow look broken. */}
+        {loaded && !code && (
+          <div className="card flat" style={{ padding: 16, marginBottom: 14, textAlign: 'center' }}>
+            <div className="eyebrow" style={{ marginBottom: 6 }}>Your invite code</div>
+            <p className="faint" style={{ fontSize: 13, margin: '4px 0 8px' }}>
+              Couldn’t load your code. Check your connection.
+            </p>
+            <button
+              className="link-btn"
+              onClick={() => {
+                playSound('pop')
+                void myInviteCode().then((c) => c && setCode(c))
+              }}
+            >
+              Retry
+            </button>
+          </div>
+        )}
         {code && (
           <div className="card flat" style={{ padding: 16, marginBottom: 14, textAlign: 'center' }}>
             <div className="eyebrow" style={{ marginBottom: 6 }}>Your invite code</div>
