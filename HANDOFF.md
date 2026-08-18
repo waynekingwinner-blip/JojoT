@@ -27,8 +27,11 @@
 
 ## 待办(优先级序)
 
-1. 等 1.0 审核结果(现在队列是新的,从 8/17 起算);过审 → King 点 Release
-2. King 在 build 13 上验证:邀请码持久可见;两台设备真机跑通好友请求/接受/实时同步(任务 #3 收尾)
+- ✅ Small Business Program 已办(King 2026-08-17 确认)—— 抽成 15%
+- ✅ build 13 令牌过期修复验证通过(退后台 1h+ 邀请码仍在)
+
+1. 等 1.0 审核结果(队列从 8/17 晚起算);过审 → King 点 Release;被拒 → 拒审正文只能网页看(Messages 区),让 King 截图
+2. 两台设备真机跑通好友请求/接受/实时同步(任务 #3 收尾,King + 朋友)
 3. v1.1 提交闸门(notes/V1_1-COMPLIANCE.md):部署新隐私政策(docs/ 已改好未部署)、
    商店描述加好友卖点、隐私问卷重答(User Content / Health&Fitness)、年龄分级 UGC 重答、
    新截图(1290×2796 含 Friends 屏)、**提交包必须去掉 VITE_BETA_UNLOCK**
