@@ -248,6 +248,7 @@ function FriendsList({ say, toast }: { say: (m: string) => void; toast: string |
               sound="success"
               onClick={async () => {
                 if (await acceptRequest(p.friendship_id)) { say('Friend added'); refresh() }
+                else { playSound('error'); say('Could not accept. Try again.') }
               }}
               style={{ padding: '8px 14px', fontSize: 13 }}
             >
