@@ -18,6 +18,7 @@ import { Check, Copy, Flag, UserMinus, UserPlus } from 'lucide-react'
 import { useApp } from '../lib/store'
 import { CheckCircle, IconButton, Sheet, SoundButton, Toast } from '../components/ui'
 import { playSound } from '../lib/sound'
+import { BETA_UNLOCK } from '../lib/purchases'
 import { haptic } from '../lib/haptics'
 import {
   acceptRequest,
@@ -208,9 +209,14 @@ function FriendsList({ say, toast }: { say: (m: string) => void; toast: string |
               <button
                 className="link-btn"
                 onClick={() => {
-                  // Friends without the app need the pitch and the store
-                  // link, not a bare eight-character code.
-                  const text = `Join me on JojoT — 75 days, one list a day. Get the app: https://apps.apple.com/app/id6799851593 then add me with code ${code}`
+                  // Friends without the app need the pitch and an install
+                  // link, not a bare eight-character code. Store link 404s
+                  // until 1.0 ships, so beta builds hand out TestFlight —
+                  // a tester hit "App Not Available" from the store link.
+                  const url = BETA_UNLOCK
+                    ? 'https://testflight.apple.com/join/uqhMPWQc'
+                    : 'https://apps.apple.com/app/id6799851593'
+                  const text = `Join me on JojoT — 75 days, one list a day. Get the app: ${url} then add me with code ${code}`
                   playSound('pop')
                   if (navigator.share) void navigator.share({ text }).catch(() => undefined)
                   else { void navigator.clipboard?.writeText(text); say('Invite copied') }
