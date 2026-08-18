@@ -37,6 +37,14 @@
    新截图(1290×2796 含 Friends 屏)、**提交包必须去掉 VITE_BETA_UNLOCK**
 4. v1.1 提交时:订阅那时应已随 1.0 过审,无需再挂;但要跑 ios-ship 新增的"提交后订阅状态必查"
 
+## v1.2+ 构想
+
+- **Superwall 付费墙实验**(King 2026-08-18 拍板记录):
+  - 费用:月归因收入 <$10k 免费,超后只对付费墙归因收入收 1%;与 RevenueCat 官方支持共存(SW 管墙面实验,RC 管订阅记账)
+  - 门槛:Capacitor 版插件(Capawesome 社区维护)要求 **Cap ≥8**,我们锁在 Cap 6 → 需先做全家升级(purchases-capacitor、apple-sign-in、全部 @capacitor/* 插件 + iOS 工程对齐,约一天 + 全量回归)
+  - 触发时机:有稳定流量后(参考:日装 50+)再做,现在接了没有实验对象
+- 暖色摄影风视觉方向(King 的照片风格参考图留作营销素材)
+
 ## 关键坐标
 
 - ASC App ID 6799851593 · beta 组 c9d65841-e28d-4cae-8571-83f6ae854685 · key 5USM77X8HV(Admin)
