@@ -123,11 +123,37 @@ await page.locator('.tab').nth(1).click()
 await page.waitForTimeout(1200)
 await shot('05-water')
 
-// 6 — you
+// 6 — you (v1.1: four tabs now, You is the fourth)
 await seed(STATE)
-await page.locator('.tab').nth(2).click()
+await page.locator('.tab').nth(3).click()
 await page.waitForTimeout(1200)
 await shot('06-you')
+
+// 7 — friends, via the screenshot fixture (live data needs two signed-in devices)
+const at = (h, m) => { const d = new Date(); d.setHours(h, m, 0, 0); return d.toISOString() }
+const FRIENDS_FIXTURE = {
+  code: 'K4TQ7M2P',
+  pending: [{ friendship_id: 'fx-1', requester_name: 'Emma', requested_at: at(8, 3) }],
+  friends: [
+    { profileId: 'fx-a', name: 'Maya', challengeName: '75 Soft', dayNo: 12, tasks: [
+      { id: 't1', text: 'Morning stretch', done: true, done_at: at(7, 12) },
+      { id: 't2', text: 'Walk 8,000 steps', done: true, done_at: at(18, 48) },
+      { id: 't3', text: 'Drink 2L of water', done: true, done_at: at(20, 5) },
+      { id: 't4', text: 'No sugar today', done: false, done_at: null },
+    ]},
+    { profileId: 'fx-b', name: 'Chris', challengeName: '75 Strict', dayNo: 34, tasks: [
+      { id: 't1', text: 'Two 45-minute workouts', done: true, done_at: at(6, 40) },
+      { id: 't2', text: 'Read 10 pages', done: true, done_at: at(21, 15) },
+      { id: 't3', text: 'Progress picture', done: false, done_at: null },
+    ]},
+  ],
+}
+await seed(STATE)
+await page.evaluate((f) => localStorage.setItem('jojot:shot:friends', f), JSON.stringify(FRIENDS_FIXTURE))
+await page.locator('.tab').nth(2).click()
+await page.waitForTimeout(1200)
+await shot('07-friends')
+await page.evaluate(() => localStorage.removeItem('jojot:shot:friends'))
 
 await browser.close()
 

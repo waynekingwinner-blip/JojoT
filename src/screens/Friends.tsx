@@ -48,7 +48,9 @@ export default function Friends() {
     setTimeout(() => setToast(null), 2200)
   }
 
-  if (!profileId) {
+  let shotMode = false
+  try { shotMode = Boolean(localStorage.getItem('jojot:shot:friends')) } catch { /* ignore */ }
+  if (!profileId && !shotMode) {
     return <SignedOut available={socialAvailable} signIn={signIn} say={say} toast={toast} />
   }
   return <FriendsList say={say} toast={toast} />
@@ -124,6 +126,20 @@ function FriendsList({ say, toast }: { say: (m: string) => void; toast: string |
   }, [])
 
   useEffect(() => {
+    /* Store-screenshot mode: seeded fixtures instead of live fetches, so
+       the App Store shot of this screen can be produced from the web
+       build. Cosmetic-only; nothing in the app ever sets this key. */
+    const fixture = localStorage.getItem('jojot:shot:friends')
+    if (fixture) {
+      try {
+        const f = JSON.parse(fixture) as { code?: string; friends?: FriendToday[]; pending?: PendingRequest[] }
+        setFriends(f.friends ?? [])
+        setPending(f.pending ?? [])
+        setCode(f.code ?? null)
+        setLoaded(true)
+        return
+      } catch { /* fall through to live fetch */ }
+    }
     refresh()
     setLoaded(true)
     /* The store hydrates profileId from localStorage synchronously, so
