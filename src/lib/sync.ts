@@ -198,7 +198,7 @@ export async function fetchFriendsToday(): Promise<FriendToday[]> {
 
   return profiles.map((p) => ({
     profileId: p.id,
-    name: p.display_name ?? 'Friend',
+    name: cleanShared(p.display_name ?? '') || 'Friend',
     challengeName: partByProfile.get(p.id) ?? '—',
     dayNo: latestByProfile.get(p.id)?.day_no ?? null,
     tasks: latestByProfile.get(p.id)?.tasks ?? [],
@@ -211,7 +211,8 @@ export async function pendingRequests(): Promise<PendingRequest[]> {
   const sb = supabase()
   if (!sb) return []
   const { data } = await sb.rpc('pending_requests')
-  return (data as PendingRequest[]) ?? []
+  const rows = (data as PendingRequest[]) ?? []
+  return rows.map((r) => ({ ...r, requester_name: cleanShared(r.requester_name ?? '') || 'Someone' }))
 }
 
 export async function acceptRequest(friendshipId: string): Promise<boolean> {
