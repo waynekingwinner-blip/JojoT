@@ -37,6 +37,12 @@
    新截图(1290×2796 含 Friends 屏)、**提交包必须去掉 VITE_BETA_UNLOCK**
 4. v1.1 提交时:订阅那时应已随 1.0 过审,无需再挂;但要跑 ios-ship 新增的"提交后订阅状态必查"
 
+## Apple 工单
+
+- 8/22 提交状态询问工单,**Case ID: 20000144794014**(developer.apple.com Send us a message)
+  背景:8/20 21:12 修复 RevenueCat offering 空包问题后重交,带加急资格,但排队超 48 小时未见 In Review
+  等 wangjyca@gmail.com 的回复邮件
+
 ## v1.2+ 构想
 
 - **Superwall 付费墙实验**(King 2026-08-18 拍板记录):
